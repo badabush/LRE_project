@@ -32,13 +32,19 @@
  * 4 - Sonar output
  * 5 - pattern XX
  * */
+
 int status_flag = 0;
 int RX_flag = 0;
+int TX_flag = 0;
+
+int R_cmd = 0;
+int L_cmd = 0;
 
 // global variable for rotating direction of motor; 0 = forward, 1 = backward
 int Lrot_dir = 0; // left motor
 int Rrot_dir = 0; // right motor
 int ds = 0; // distance to move forward [cm]
+int cycle = 4096; //cycles required for moving one distance
 char received_string[];
 
 int main(void) {
@@ -54,27 +60,26 @@ int main(void) {
 	LMotorTIMInit();
 	RMotorIRT();
 	LMotorIRT();
-
 	//init Sonar
-
+//
 	RCCInit();
-	//UARTGPIOInit(USART1);
 	GPIOInit();
 	TIMInit();
 
 	// init UART
 	UARTGPIOInit();
-	// lre_wait_init();
+	 lre_wait_init();
 
 	//feedback
-	SendString("Initialization completed.");
+//	SendString("Initialization completed.");
 
 	/* ******************************************** */
 	/* **************** Main Logic **************** */
 	/* ******************************************** */
 	while (1) {
 		if (RX_flag == 1) {
-			//declarations for substring operations
+//			SendString("Main loop\n");
+//			//declarations for substring operations
 			char str1[2];
 			char str2[2];
 			char str3[5];
@@ -87,28 +92,28 @@ int main(void) {
 				cmd_forward();
 				//call pattern to drive
 
-			} else if (strcmp(str1, "mv") == 0) {
-				substring(received_string, str2, 3, 2);
-				if (strcmp(str2, "ds") == 0) {
-					substring(received_string, str3, 6, 5);
-					ds = atoi(str3);
-					Lrot_dir = 0;
-					Rrot_dir = 0;
-					cmd_forward();
-					SendString(printf("Moving Distance: %i", ds));
-				} else if (strcmp(str2, "rt")){
-					if (strcmp(str3, "0") == 0) {
-						SendString("Rotating (+)\n");
-						Lrot_dir = 0;
-						Rrot_dir = 1;
-						ds = 25;
-					}else{
-						SendString("Rotating (-)\n");
-						Lrot_dir = 1;
-						Rrot_dir = 0;
-						ds = 25;
-					}
-				}
+//			} else if (strcmp(str1, "mv") == 0) {
+//				substring(received_string, str2, 3, 2);
+//				if (strcmp(str2, "ds") == 0) {
+//					substring(received_string, str3, 6, 5);
+//					ds = atoi(str3);
+//					cmd_forward();
+//					SendString(printf("Moving Distance: %i", ds));
+//				} else if (strcmp(str2, "rt")) {
+//					if (strcmp(str3, "0") == 0) {
+//						SendString("Rotating (+)\n");
+//						Lrot_dir = 0;
+//						Rrot_dir = 1;
+//						ds = 25;
+//					} else if (strcmp(str3, "1" == 0)){
+//						SendString("Rotating (-)\n");
+//						Lrot_dir = 1;
+//						Rrot_dir = 0;
+//						ds = 25;
+//					}
+//				} else {
+//					SendString("Unknown command.\n");
+//				}
 
 			} else if (strcmp(received_string, "tm ps\r\n") == 0) {
 
@@ -155,9 +160,9 @@ int main(void) {
 				SendString("Instruction not known, type help for commands.\n");
 			}
 
-		//Clear received buffer and counter
-		clearRXBuffer();
+			clearRXBuffer();
+			RX_flag = 0;
 		}
-		//set **global_flag** from USART IRQHandler, do something *here* (asking for flags, doing commands from here)
+//		//set **global_flag** from USART IRQHandler, do something *here* (asking for flags, doing commands from here)
 	}
 }

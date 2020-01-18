@@ -20,6 +20,9 @@
 #define R1 GPIO_Pin_13
 #define stpport GPIOC
 
+extern int R_cmd;
+extern int Rrot_dir;
+
 void RMotorGPIOInit(void);
 void RMotorTIMInit(void);
 void RMotorIRT(void);

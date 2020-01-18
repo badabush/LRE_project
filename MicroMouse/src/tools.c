@@ -7,7 +7,7 @@ void substring(char s[], char sub[], int p, int l) {
    int c = 0;
 
    while (c < l) {
-      sub[c] = s[p+c-1];
+      sub[c] = s[p+c];
       c++;
    }
    sub[c] = '\0';

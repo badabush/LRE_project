@@ -21,10 +21,8 @@
 #define L4 GPIO_Pin_9
 #define stpport GPIOC
 
-extern int ds;
+extern int L_cmd;
 extern int Lrot_dir;
-
-int cycle = 4096; //cycles required for moving one distance
 
 void LMotorGPIOInit(void);
 void LMotorTIMInit(void);

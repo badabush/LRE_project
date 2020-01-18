@@ -1,6 +1,6 @@
 #include <UART_com.h>
 
-void UARTGPIOInit(void){
+void UARTGPIOInit(void) {
 	GPIO_InitTypeDef gpioInitStruct;
 	USART_InitTypeDef usartInitStruct;
 	NVIC_InitTypeDef nvicInitStruct;
@@ -35,50 +35,58 @@ void UARTGPIOInit(void){
 	USART_Init(USART1, &usartInitStruct);
 	USART_Cmd(USART1, ENABLE);
 	/* Enable RXNE interrupt */
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-    /* Enable TXNE interrupt */
-    USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
-    /* Enable USART1 global interrupt */
-//    NVIC_EnableIRQ(USART1_IRQn);
-
+	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+	/* Enable TXNE interrupt */
+	USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
+	/* Enable USART1 global interrupt */
+//	NVIC_EnableIRQ(USART1_IRQn);
 }
 
+char OUT_rate[80]; // what to send
 
-char OUT_rate[80];// what to send
-
-
-void SendString(char *str){
+void SendString(char *str) {
+//	USART_ClearITPendingBit(USART1, USART_IT_TXE);
 	uint8_t i = 0;
-	while (str[i] != '\0'){
-		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+	while (str[i] != '\0') {
+		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET)
+			;
 		USART_SendData(USART1, str[i]);
 		i++;
 	}
+	USART_ClearITPendingBit(USART1, USART_IT_TC);
+	USART_ITConfig(USART1, USART_IT_TXE, DISABLE);
+
 }
 
+unsigned char cnt = 0;
+void USART1_IRQHandler(void) {
 
-unsigned char cnt=0;
-void USART1_IRQHandler(void){
-	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET){
-
-		char t = USART1->RDR;
-		received_string[cnt++] = t;
-		if(t == '\n'){
-			/*clean up \n when in first position*/
-			if (received_string[0] == '\n') {
-				memmove(received_string, received_string+1, strlen(received_string));
+	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {
+		if (RX_flag == 0) {
+			USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+			char t = USART1->RDR;
+			received_string[cnt++] = t;
+			if (t == '\n') {
+//			/*clean up \n when in first position*/
+//			if (received_string[0] == '\n') {
+//				memmove(received_string, received_string + 1,
+//						strlen(received_string));
+//			}
+				RX_flag = 1;
+				SendString(received_string);
+//				clearRXBuffer();
+				//TODO:replace \r\n with \0
+//			USART_ClearITPendingBit(USART1, USART_IT_RXNE);
 			}
-			SendString(received_string);
-			RX_flag = 1;
-			//TODO:replace \r\n with \0
 		}
+
 	}
 }
 
-
-void clearRXBuffer(void){
-    int i;
-    for(i=0;i<cnt;i++) received_string[i]=0;
-    cnt=0;
+void clearRXBuffer(void) {
+	int i;
+	for (i = 0; i < cnt; i++)
+		received_string[i] = 0;
+	cnt = 0;
 }
 
