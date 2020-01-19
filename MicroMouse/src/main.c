@@ -15,14 +15,15 @@
 #include <UART_com.h>
 #include <lre_wait.h>
 
-#include <StepMotorR.h>
-#include <StepMotorL.h>
-
 #include <sonar.h>
 
 #include <moves.h>
+#include <StepMotor.h>
 
 #include <tools.h>
+
+#define std_steps 2000
+#define std_turn 1400
 
 /* STATUS FLAG DEFINITION
  * 0 - do nothing
@@ -46,6 +47,7 @@ int Rrot_dir = 0; // right motor
 int ds = 0; // distance to move forward [cm]
 int cycle = 4096; //cycles required for moving one distance
 char received_string[];
+char rt_dir[1];
 
 int main(void) {
 
@@ -55,23 +57,16 @@ int main(void) {
 
 	//init Motor
 	RMotorGPIOInit();
-	LMotorGPIOInit();
 	RMotorTIMInit();
-	LMotorTIMInit();
 	RMotorIRT();
-	LMotorIRT();
+
 	//init Sonar
-//
 	RCCInit();
 	GPIOInit();
 	TIMInit();
 
 	// init UART
 	UARTGPIOInit();
-	 lre_wait_init();
-
-	//feedback
-//	SendString("Initialization completed.");
 
 	/* ******************************************** */
 	/* **************** Main Logic **************** */
@@ -84,36 +79,39 @@ int main(void) {
 			char str2[2];
 			char str3[5];
 			substring(received_string, str1, 0, 2);
-			if (strcmp(received_string, "mv\r\n") == 0) {
+			if (strcmp(received_string, "mv fw\r\n") == 0) {
 
-				SendString("Moving.\n");
+				SendString("Moving forwards.\n");
 				//TODO:implement reading "mv ds *val*": read value from string to get distance.
-				ds = 20;
+				ds = std_steps;
 				cmd_forward();
 				//call pattern to drive
+			} else if (strcmp(received_string, "mv bw\r\n") == 0) {
+				SendString("Moving backwards.\n");
+				ds = std_steps;
+				cmd_backward();
 
-//			} else if (strcmp(str1, "mv") == 0) {
-//				substring(received_string, str2, 3, 2);
-//				if (strcmp(str2, "ds") == 0) {
-//					substring(received_string, str3, 6, 5);
-//					ds = atoi(str3);
-//					cmd_forward();
-//					SendString(printf("Moving Distance: %i", ds));
-//				} else if (strcmp(str2, "rt")) {
-//					if (strcmp(str3, "0") == 0) {
-//						SendString("Rotating (+)\n");
-//						Lrot_dir = 0;
-//						Rrot_dir = 1;
-//						ds = 25;
-//					} else if (strcmp(str3, "1" == 0)){
-//						SendString("Rotating (-)\n");
-//						Lrot_dir = 1;
-//						Rrot_dir = 0;
-//						ds = 25;
-//					}
-//				} else {
-//					SendString("Unknown command.\n");
-//				}
+			} else if (strcmp(str1, "mv") == 0) {
+				substring(received_string, str2, 3, 2);
+				if (strcmp(str2, "ds") == 0) {
+					substring(received_string, str3, 6, 5);
+					ds = atoi(str3);
+					cmd_forward();
+					SendString(printf("Moving Distance: %i", ds));
+				} else if (strcmp(str2, "rt") == 0) {
+					substring(received_string, rt_dir, 6, 1);
+					if (strcmp(rt_dir, "0") == 0) {
+						SendString("Rotating (+)\n");
+						cmd_Rturn();
+						ds = std_turn;
+					} else if (strcmp(rt_dir, "1") == 0) {
+						SendString("Rotating (-)\n");
+						cmd_Lturn();
+						ds = std_turn;
+					}
+				} else {
+					SendString("Unknown command.\n");
+				}
 
 			} else if (strcmp(received_string, "tm ps\r\n") == 0) {
 

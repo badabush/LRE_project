@@ -11,6 +11,6 @@ extern int R_cmd;
 extern int L_cmd;
 
 void cmd_forward(void);
-void cmd_back(void);
+void cmd_backward(void);
 void cmd_Lturn(void);
 void cmd_Rturn(void);
