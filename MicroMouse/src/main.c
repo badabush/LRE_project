@@ -60,11 +60,13 @@ int main(void) {
 	RMotorTIMInit();
 	RMotorIRT();
 
-	//init Sonar
-	SonarCInit();
 
 	// init UART
 	UARTGPIOInit();
+
+
+	//init Sonar
+	SonarCInit();
 
 	/* ******************************************** */
 	/* **************** Main Logic **************** */
@@ -93,7 +95,7 @@ int main(void) {
 				substring(received_string, str2, 3, 2);
 				if (strcmp(str2, "ds") == 0) {
 					substring(received_string, str3, 6, 5);
-					ds = atoi(str3) * 170;
+					ds = atoi(str3) * 177;
 					cmd_forward();
 					SendString(printf("Moving Distance: %i", ds));
 				} else if (strcmp(str2, "rt") == 0) {
