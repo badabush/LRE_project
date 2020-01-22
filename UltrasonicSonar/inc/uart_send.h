@@ -27,6 +27,11 @@ void UARTGPIOInit(USART_TypeDef* USARTx){
 
 	USART_Init(USARTx, &usartInitStruct);
 	USART_Cmd(USARTx, ENABLE);
+
+	USART_ITConfig(USARTx, USART_IT_RXNE, ENABLE);
+	USART_ITConfig(USARTx, USART_IT_TXE, ENABLE);
+
+
 }
 
 

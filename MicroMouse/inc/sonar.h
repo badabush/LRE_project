@@ -5,8 +5,9 @@ extern int status_flag;
 uint16_t t0;
 uint16_t t9;
 
-void RCCInit(void);
-void GPIOInit(void);
-void TIMInit(void);
-void EXTI4_15_IRQHandler(void);
+char OUT_dist;
+extern int status_flag;
+
+void SonarCInit(void);
+//void EXTI4_15_IRQHandler(void);
 

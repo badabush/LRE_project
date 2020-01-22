@@ -67,8 +67,8 @@ void RMotorIRT() {
 void TIM16_IRQHandler(void) {
 	TIM_ClearITPendingBit(TIM16, TIM_IT_Update);
 	// increase or decrease step counter, depending on the // rotation direction
-	while (ds != 0) {
-		SendString("R Moving.\n");
+	if (ds != 0) {
+//		SendString("R Moving.\n");
 		if (R_cmd != 0) {
 			switch (step_counterR) {
 			case 0:
