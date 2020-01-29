@@ -32,7 +32,7 @@ extern int L_cmd;
 extern int Lrot_dir;
 extern int ds;
 
-void RMotorGPIOInit(void);
-void RMotorTIMInit(void);
-void RMotorIRT(void);
+void MotorGPIOInit(void);
+void MotorTIMInit(void);
+void MotorIRT(void);
 //void TIM16_IRQHandler(void);

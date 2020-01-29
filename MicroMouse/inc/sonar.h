@@ -7,6 +7,10 @@
 
 extern int status_flag;
 extern int sonar_flag;
+
+extern int dist_R;
+extern int dist_C;
+extern int dist_L;
 /*Sonar flag:
  * flag 0 - check L
  * flag 1 - check R

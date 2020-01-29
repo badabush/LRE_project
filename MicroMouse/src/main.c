@@ -50,6 +50,12 @@ int cycle = 4096; //cycles required for moving one distance
 char received_string[30];
 char rt_dir[1];
 
+//distances from sonar
+
+int dist_L = 0;
+int dist_C = 0;
+int dist_R = 0;
+char sonar_dist[30];
 int main(void) {
 
 	/* ******************************************** */
@@ -57,9 +63,9 @@ int main(void) {
 	/* ******************************************** */
 
 	//init Motor
-	RMotorGPIOInit();
-	RMotorTIMInit();
-	RMotorIRT();
+	MotorGPIOInit();
+	MotorTIMInit();
+	MotorIRT();
 
 	// init UART
 	UARTGPIOInit();
@@ -67,8 +73,6 @@ int main(void) {
 	//init Sonar
 	SonarInit();
 
-	//activate EXTI interrupt handler via NVIC
-	NVIC_EnableIRQ(EXTI4_15_IRQn);
 
 	/* ******************************************** */
 	/* **************** Main Logic **************** */
@@ -132,10 +136,10 @@ int main(void) {
 				SendString("Current usage: ? mA\n");
 
 			} else if (strcmp(received_string, "tm us\r\n") == 0) {
-				TIM_Cmd(TIM3, ENABLE);
-				status_flag = 4;
-				sonar_flag = 1;
 
+				sprintf(sonar_dist, "R: %5i cm, C: %5i cm, L: %5i cm\n", dist_R,
+						dist_C, dist_L);
+				SendString(sonar_dist);
 
 			} else if (strcmp(received_string, "stop\r\n") == 0) {
 

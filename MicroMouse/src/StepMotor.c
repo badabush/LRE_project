@@ -13,7 +13,7 @@
 uint8_t step_counterR = 0;
 uint8_t step_counterL = 0;
 
-void RMotorGPIOInit() {
+void MotorGPIOInit() {
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 	//R
 	GPIO_InitTypeDef gpioInitStruct;
@@ -32,7 +32,7 @@ void RMotorGPIOInit() {
 	GPIO_Init(GPIOC, &gpioInitStruct);
 }
 
-void RMotorTIMInit() {
+void MotorTIMInit() {
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM16, ENABLE);
 
@@ -56,7 +56,7 @@ void RMotorTIMInit() {
 }
 
 //Function for interrupt
-void RMotorIRT() {
+void MotorIRT() {
 	//set interrupt
 	TIM_ITConfig(TIM16, TIM_IT_Update, ENABLE);
 	//setup nvic for interrupt

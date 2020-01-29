@@ -312,15 +312,14 @@ void gpio_pinSetup_interrupt(GPIO_TypeDef *GPIOx, uint32_t pinNumber,
  }
  }*/
 
-
 // added for the project
-void TIM_init(TIM_TypeDef* TIMx){
+void TIM_init(TIM_TypeDef *TIMx) {
 	//TIM CLOCK ENABLE
-	if (TIMx==TIM3){
+	if (TIMx == TIM3) {
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-	}else if (TIMx==TIM17){
+	} else if (TIMx == TIM17) {
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM17, ENABLE);
-	}else if (TIMx==TIM2){
+	} else if (TIMx == TIM2) {
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 	}
 
@@ -343,6 +342,15 @@ void TIM_init(TIM_TypeDef* TIMx){
 	ocInitStruct.TIM_OutputState = TIM_OutputState_Enable;
 	ocInitStruct.TIM_OutputNState = TIM_OutputNState_Disable;
 	ocInitStruct.TIM_Pulse = 5;
-	TIM_OC1Init(TIMx, &ocInitStruct);
+//	TIM_OC1Init(TIMx, &ocInitStruct);
+	//certain TIMs need to be initialized specially
+	if (TIMx == TIM3) {
+		TIM_OC1Init(TIMx, &ocInitStruct);
+	} else if (TIMx == TIM2) {
+		TIM_OC2Init(TIMx, &ocInitStruct);
+	} else if (TIMx == TIM17) {
+		TIM_OC1Init(TIMx, &ocInitStruct);
+		TIM_CtrlPWMOutputs(TIM17, ENABLE);
+	}
 //	TIM_Cmd(TIMx, ENABLE);
 }
