@@ -1,13 +1,17 @@
+#include "stm32f0xx_gpio.h"
 #include "stm32f0xx.h"
+#include "stm32f0xx_rcc.h"
 #include "stm32f072b_discovery.h"
+#include "gpio_init.h"
+
 
 extern int status_flag;
-uint16_t t0;
-uint16_t t9;
+extern int sonar_flag;
+/*Sonar flag:
+ * flag 0 - check L
+ * flag 1 - check R
+ * flag 2 - check C
+ * */
 
-char OUT_dist;
-extern int status_flag;
-
-void SonarCInit(void);
-//void EXTI4_15_IRQHandler(void);
-
+void SonarInit(void);
+void EXTI4_15_IRQHandler(void);

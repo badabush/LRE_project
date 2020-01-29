@@ -16,93 +16,125 @@
  * Baudrate: 115200, Databits: 8, Parity: none, Stop Bits: 1
  * */
 
-#include <sonar.h>
+#include "sonar.h"
+char center_dist[50];
+char right_dist[50];
+char left_dist[50];
 
-void SonarCInit(void) {
-	/*Enable Port for Timer*/
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-	/*Enable Port for Timer*/
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
-	/*SYSCFG clock enable*/
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
-	/*TIM clock enable*/
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+int t0_R = 0;
+int t9_R = 0;
+int dist_R = 0;
+//
+int t0_L = 0;
+int t9_L = 0;
+int dist_L = 0;
 
-	/*GPIO inits for echo and trigger*/
+int t0_C = 0;
+int t9_C = 0;
+int dist_C = 0;
 
-	//Echo
-	GPIO_InitTypeDef gpioEchoStruct;
-	gpioEchoStruct.GPIO_Mode = GPIO_Mode_IN;
-	gpioEchoStruct.GPIO_OType = GPIO_OType_PP;
-	gpioEchoStruct.GPIO_Pin = GPIO_Pin_11;
-	gpioEchoStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	gpioEchoStruct.GPIO_Speed = GPIO_Speed_Level_1;
-	GPIO_Init(GPIOC, &gpioEchoStruct);
+uint16_t t_echo_R;
+uint16_t t_echo_L;
+uint16_t t_echo_C;
 
-	//tigger GPIO
-	GPIO_InitTypeDef gpioTrigStruct;
-	gpioTrigStruct.GPIO_Mode = GPIO_Mode_AF;
-	gpioTrigStruct.GPIO_OType = GPIO_OType_PP;
-	gpioTrigStruct.GPIO_Pin = GPIO_Pin_3;
-	gpioTrigStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	gpioTrigStruct.GPIO_Speed = GPIO_Speed_Level_1;
-	GPIO_Init(GPIOB, &gpioTrigStruct);
-	//configure AF for b-pin4
-	GPIO_PinAFConfig(GPIOB, GPIO_PinSource3, GPIO_AF_2);
-	/* trigger function not on TIM
-	 * solution:
-	 * */
+void SonarInit(void) {
 
-	TIM_TimeBaseInitTypeDef timerInitStruct;
-	timerInitStruct.TIM_ClockDivision = 0;
-	timerInitStruct.TIM_CounterMode = TIM_CounterMode_Up;
-	timerInitStruct.TIM_Period = 50000 - 1;
-	timerInitStruct.TIM_Prescaler = SystemCoreClock / 500000 - 1;
-	timerInitStruct.TIM_RepetitionCounter = 0;
+	//Sonar L
+	gpio_pinSetup(GPIOB, GPIO_Pin_6, GPIO_Mode_IN, GPIO_OType_PP,
+			GPIO_PuPd_NOPULL, GPIO_Speed_Level_1);
+	gpio_pinSetup_AF(GPIOB, GPIO_Pin_4, GPIO_AF_1, GPIO_OType_PP,
+			GPIO_PuPd_NOPULL, GPIO_Speed_Level_1);
+	gpio_pinSetup_interrupt(GPIOB, GPIO_Pin_6, EXTI_Trigger_Rising_Falling, 0);
+	TIM_init(TIM3);
 
-	/*EXTI configurations*/
-	EXTI_InitTypeDef extiInitStruct;
-	extiInitStruct.EXTI_Line = EXTI_Line11;
-	extiInitStruct.EXTI_LineCmd = ENABLE;
-	extiInitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
-	extiInitStruct.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
-	EXTI_Init(&extiInitStruct);
-	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource11);
-	//activate EXTI interrupt handler via NVIC
-	NVIC_EnableIRQ(EXTI4_15_IRQn);
-	/*Initialize PWM*/
-	TIM_OCInitTypeDef ocInitStruct;
-	ocInitStruct.TIM_OCIdleState = TIM_OCIdleState_Set;
-	ocInitStruct.TIM_OCNIdleState = TIM_OCNIdleState_Set;
-	ocInitStruct.TIM_OCMode = TIM_OCMode_PWM1;
-	ocInitStruct.TIM_OCPolarity = TIM_OCPolarity_High;
-	ocInitStruct.TIM_OCNPolarity = TIM_OCNPolarity_High;
-	ocInitStruct.TIM_OutputState = TIM_OutputState_Enable;
-	ocInitStruct.TIM_OutputNState = TIM_OutputNState_Disable;
-	ocInitStruct.TIM_Pulse = 5;
-	TIM_OC1Init(TIM2, &ocInitStruct);
+	//Sonar C
+	gpio_pinSetup(GPIOC, GPIO_Pin_11, GPIO_Mode_IN, GPIO_OType_PP,
+			GPIO_PuPd_NOPULL, GPIO_Speed_Level_1);
+	gpio_pinSetup_AF(GPIOB, GPIO_Pin_3, GPIO_AF_2, GPIO_OType_PP,
+			GPIO_PuPd_NOPULL, GPIO_Speed_Level_1);
+	gpio_pinSetup_interrupt(GPIOC, GPIO_Pin_11, EXTI_Trigger_Rising_Falling, 0);
+	TIM_init(TIM2);
 
-	TIM_TimeBaseInit(TIM2, &timerInitStruct);
+	//Sonar R
+	gpio_pinSetup(GPIOC, GPIO_Pin_4, GPIO_Mode_IN, GPIO_OType_PP,
+			GPIO_PuPd_NOPULL, GPIO_Speed_Level_1);
+	gpio_pinSetup_AF(GPIOB, GPIO_Pin_9, GPIO_AF_2, GPIO_OType_PP,
+			GPIO_PuPd_NOPULL, GPIO_Speed_Level_1);
+	gpio_pinSetup_interrupt(GPIOC, GPIO_Pin_4, EXTI_Trigger_Rising_Falling, 0);
+	TIM_init(TIM17);
 
-	TIM_Cmd(TIM2, ENABLE);
 }
 
 void EXTI4_15_IRQHandler(void) {
-	/*Interrupt handler for EXTI 4-15*/
-	uint16_t t_echo;
-	uint16_t dist;
-//	if (status_flag == 4) {
-		SendString("EXTI C flag 4.\n");
-		if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_11) == SET) {
-			//rising trigger
-			t0 = TIM_GetCounter(TIM2);
-		} else {
-			t9 = TIM_GetCounter(TIM2);
-			t_echo = t9 - t0;
-			dist = t_echo * 0.034;
-			OUT_dist = itoa(dist);
-			SendString(OUT_dist);
+	if (status_flag == 4) {
+		if (sonar_flag == 1) {
+			if (EXTI_GetFlagStatus(EXTI_Line6)) {
+
+				if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_6) == SET) {
+					//rising trigger
+					t0_L = TIM_GetCounter(TIM3);
+
+				} else {
+					t9_L = TIM_GetCounter(TIM3);
+
+					t_echo_L = t9_L - t0_L;
+					dist_L = t_echo_L * 0.034;
+					if (dist_L > 400)
+						dist_L = 0;
+					sonar_flag = 2;
+					sprintf(left_dist, "distance L %5i cm;", dist_L);
+					SendString(left_dist);
+					TIM_Cmd(TIM3, DISABLE);
+					TIM_Cmd(TIM2, ENABLE);
+				}
+			} //getflagstatus_line6
 		}
-//	}
-	EXTI_ClearITPendingBit(EXTI_Line11);
-}
+		if (sonar_flag == 2) {
+			if (EXTI_GetFlagStatus(EXTI_Line11)) {
+				if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_11) == SET) {
+					//rising trigger
+					t0_C = TIM_GetCounter(TIM2);
+
+				} else {
+					t9_C = TIM_GetCounter(TIM2);
+
+					t_echo_C = t9_C - t0_C;
+					dist_C = t_echo_C * 0.034;
+					if (dist_C > 400)
+						dist_C = 0;
+					sonar_flag = 3;
+					sprintf(center_dist, "C %5i cm;", dist_C);
+					SendString(center_dist);
+					TIM_Cmd(TIM2, DISABLE);
+					TIM_Cmd(TIM17, ENABLE);
+				}
+			} //getflagstatus_line4
+		}
+		if (sonar_flag == 3) {
+			if (EXTI_GetFlagStatus(EXTI_Line4)) {
+				if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_4) == SET) {
+					//rising trigger
+					t0_R = TIM_GetCounter(TIM17);
+
+				} else {
+					t9_R = TIM_GetCounter(TIM17);
+
+					t_echo_R = t9_R - t0_R;
+					dist_R = t_echo_R * 0.034;
+					if (dist_R > 400)
+						dist_R = 0;
+					sonar_flag = 0;
+					sprintf(right_dist, "R %5i cm\n", dist_R);
+					SendString(right_dist);
+					status_flag = 0;
+					TIM_Cmd(TIM17, DISABLE);
+//			TIM_Cmd(TIM3, ENABLE);
+				}
+			} //getflagstatus_line4
+		}
+		EXTI_ClearITPendingBit(EXTI_Line4);
+		EXTI_ClearITPendingBit(EXTI_Line11);
+		EXTI_ClearITPendingBit(EXTI_Line6);
+	}
+} //EXTI4_15
+

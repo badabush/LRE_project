@@ -1,5 +1,6 @@
 #include <UART_com.h>
 
+
 void UARTGPIOInit(void) {
 	GPIO_InitTypeDef gpioInitStruct;
 	USART_InitTypeDef usartInitStruct;

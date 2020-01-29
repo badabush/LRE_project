@@ -6,6 +6,8 @@
 #include "stm32f0xx_rcc.h"
 #include "stm32f072b_discovery.h"
 #include <string.h>
+//#include <gpio_init.c>
+
 
 #define UART_TX GPIO_Pin_9
 #define UART_RX GPIO_Pin_10
@@ -13,7 +15,6 @@
 #define UART_PinSource_RX GPIO_PinSource10
 #define UART_AF GPIO_AF_1
 #define PORT GPIOA
-
 
 
 extern char received_string[];

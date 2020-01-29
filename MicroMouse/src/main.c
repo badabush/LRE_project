@@ -8,19 +8,19 @@
  ******************************************************************************
  */
 
+#include <gpio_init.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stm32f0xx.h>
 #include <stm32f072b_discovery.h>
+#include <tools.h>
 #include <UART_com.h>
 #include <lre_wait.h>
-
-#include <sonar.h>
 
 #include <moves.h>
 #include <StepMotor.h>
 
-#include <tools.h>
+#include <sonar.h>
 
 #define std_steps 2000
 #define std_turn 1400
@@ -35,6 +35,7 @@
  * */
 
 int status_flag = 0;
+int sonar_flag = 0;
 int RX_flag = 0;
 int TX_flag = 0;
 
@@ -46,7 +47,7 @@ int Lrot_dir = 0; // left motor
 int Rrot_dir = 0; // right motor
 int ds = 0; // distance to move forward [cm]
 int cycle = 4096; //cycles required for moving one distance
-char received_string[];
+char received_string[30];
 char rt_dir[1];
 
 int main(void) {
@@ -60,13 +61,14 @@ int main(void) {
 	RMotorTIMInit();
 	RMotorIRT();
 
-
 	// init UART
 	UARTGPIOInit();
 
-
 	//init Sonar
-	SonarCInit();
+	SonarInit();
+
+	//activate EXTI interrupt handler via NVIC
+	NVIC_EnableIRQ(EXTI4_15_IRQn);
 
 	/* ******************************************** */
 	/* **************** Main Logic **************** */
@@ -130,11 +132,10 @@ int main(void) {
 				SendString("Current usage: ? mA\n");
 
 			} else if (strcmp(received_string, "tm us\r\n") == 0) {
+				TIM_Cmd(TIM3, ENABLE);
 				status_flag = 4;
+				sonar_flag = 1;
 
-				SendString("Sonar C: ? mm\n");
-				SendString("Sonar L: ? mm\n");
-				SendString("Sonar R: ? mm\n");
 
 			} else if (strcmp(received_string, "stop\r\n") == 0) {
 
