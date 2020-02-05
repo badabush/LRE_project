@@ -23,12 +23,19 @@ char left_dist[50];
 
 int t0_R = 0;
 int t9_R = 0;
+int cnt_R = 0;
 //
 int t0_L = 0;
 int t9_L = 0;
+int cnt_L = 0;
 
 int t0_C = 0;
 int t9_C = 0;
+int cnt_C = 0;
+//distance arrays for filtering
+int dsarrayR[array_len];
+int dsarrayL[array_len];
+int dsarrayC[array_len];
 
 uint16_t t_echo_R;
 uint16_t t_echo_L;
@@ -36,7 +43,7 @@ uint16_t t_echo_C;
 
 void SonarInit(void) {
 
-	//Sonar L
+	//Sonar R
 	gpio_pinSetup(GPIOB, GPIO_Pin_6, GPIO_Mode_IN, GPIO_OType_PP,
 			GPIO_PuPd_NOPULL, GPIO_Speed_Level_1);
 	gpio_pinSetup_AF(GPIOB, GPIO_Pin_4, GPIO_AF_1, GPIO_OType_PP,
@@ -52,7 +59,7 @@ void SonarInit(void) {
 	gpio_pinSetup_interrupt(GPIOC, GPIO_Pin_11, EXTI_Trigger_Rising_Falling, 0);
 	TIM_init(TIM2);
 
-	//Sonar R
+	//Sonar L
 	gpio_pinSetup(GPIOC, GPIO_Pin_4, GPIO_Mode_IN, GPIO_OType_PP,
 			GPIO_PuPd_NOPULL, GPIO_Speed_Level_1);
 	gpio_pinSetup_AF(GPIOB, GPIO_Pin_9, GPIO_AF_2, GPIO_OType_PP,
@@ -74,15 +81,17 @@ void EXTI4_15_IRQHandler(void) {
 
 		if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_6) == SET) {
 			//rising trigger
-			t0_L = TIM_GetCounter(TIM3);
+			t0_R = TIM_GetCounter(TIM3);
 
 		} else {
-			t9_L = TIM_GetCounter(TIM3);
+			t9_R = TIM_GetCounter(TIM3);
 
-			t_echo_L = t9_L - t0_L;
-			dist_L = t_echo_L * 0.034;
-			if (dist_L > 400)
-				dist_L = 0;
+			t_echo_R = t9_R - t0_R;
+			dist_R = t_echo_R * 0.034;
+			if (dist_R > 400)
+				dist_R = 0;
+			//filter distance
+			dist_R, cnt_R = sonar_filtering(dist_R, dsarrayR, cnt_R);
 
 		}
 		EXTI_ClearITPendingBit(EXTI_Line6);
@@ -99,6 +108,7 @@ void EXTI4_15_IRQHandler(void) {
 			dist_C = t_echo_C * 0.034;
 			if (dist_C > 400)
 				dist_C = 0;
+			dist_C, cnt_C = sonar_filtering(dist_C, dsarrayC, cnt_C);
 
 		}
 		EXTI_ClearITPendingBit(EXTI_Line11);
@@ -106,16 +116,16 @@ void EXTI4_15_IRQHandler(void) {
 	if (EXTI_GetFlagStatus(EXTI_Line4)) {
 		if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_4) == SET) {
 			//rising trigger
-			t0_R = TIM_GetCounter(TIM17);
+			t0_L = TIM_GetCounter(TIM17);
 
 		} else {
-			t9_R = TIM_GetCounter(TIM17);
+			t9_L = TIM_GetCounter(TIM17);
 
-			t_echo_R = t9_R - t0_R;
-			dist_R = t_echo_R * 0.034;
-			if (dist_R > 400)
-				dist_R = 0;
-
+			t_echo_L = t9_L - t0_L;
+			dist_L = t_echo_L * 0.034;
+			if (dist_L > 400)
+				dist_L = 0;
+			dist_L, cnt_L = sonar_filtering(dist_L, dsarrayL, cnt_L);
 		}
 
 		EXTI_ClearITPendingBit(EXTI_Line4);

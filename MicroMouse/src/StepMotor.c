@@ -68,100 +68,12 @@ void TIM16_IRQHandler(void) {
 	TIM_ClearITPendingBit(TIM16, TIM_IT_Update);
 	// increase or decrease step counter, depending on the // rotation direction
 	if (ds != 0) {
-//		SendString("R Moving.\n");
-		if (R_cmd != 0) {
-			switch (step_counterR) {
-			case 0:
-				GPIO_SetBits(stpport, R1);
-				GPIO_ResetBits(stpport, R2 | R3 | R4);
-				if (Rrot_dir == 0) {
-					step_counterR++;
-				} else {
-					step_counterR = 7;
-				}
-				break;
-			case 1:
-				GPIO_SetBits(stpport, R1 | R2);
-				GPIO_ResetBits(stpport, R3 | R4);
-
-				if (Rrot_dir == 0) {
-					step_counterR++;
-				} else {
-					step_counterR--;
-				}
-				break;
-			case 2:
-				GPIO_SetBits(stpport, R2);
-				GPIO_ResetBits(stpport, R1 | R3 | R4);
-
-				if (Rrot_dir == 0) {
-					step_counterR++;
-				} else {
-					step_counterR--;
-				}
-				break;
-			case 3:
-				GPIO_SetBits(stpport, R2 | R3);
-				GPIO_ResetBits(stpport, R1 | R4);
-
-				if (Rrot_dir == 0) {
-					step_counterR++;
-				} else {
-					step_counterR--;
-				}
-				break;
-			case 4:
-				GPIO_SetBits(stpport, R3);
-				GPIO_ResetBits(stpport, R2 | R1 | R4);
-
-				if (Rrot_dir == 0) {
-					step_counterR++;
-				} else {
-					step_counterR--;
-				}
-				break;
-			case 5:
-				GPIO_SetBits(stpport, R3 | R4);
-				GPIO_ResetBits(stpport, R2 | R1);
-
-				if (Rrot_dir == 0) {
-					step_counterR++;
-				} else {
-					step_counterR--;
-				}
-				break;
-			case 6:
-				GPIO_SetBits(stpport, R4);
-				GPIO_ResetBits(stpport, R2 | R3 | R1);
-
-				if (Rrot_dir == 0) {
-					step_counterR++;
-				} else {
-					step_counterR--;
-				}
-				break;
-			case 7:
-				GPIO_SetBits(stpport, R1 | R4);
-				GPIO_ResetBits(stpport, R2 | R3);
-
-				if (Rrot_dir == 0) {
-					step_counterR++;
-				} else {
-					step_counterR--;
-				}
-				break;
-			default:
-				step_counterR = 0;
-
-				break;
-			}
-		}
-		// L side
+//		SendString("L Moving.\n");
 		if (L_cmd != 0) {
 			switch (step_counterL) {
 			case 0:
-				GPIO_SetBits(stpport, L1);
-				GPIO_ResetBits(stpport, L2 | L3 | L4);
+				GPIO_SetBits(stpport, L4);
+				GPIO_ResetBits(stpport, L3 | L2 | L1);
 				if (Lrot_dir == 0) {
 					step_counterL++;
 				} else {
@@ -169,8 +81,8 @@ void TIM16_IRQHandler(void) {
 				}
 				break;
 			case 1:
-				GPIO_SetBits(stpport, L1 | L2);
-				GPIO_ResetBits(stpport, L3 | L4);
+				GPIO_SetBits(stpport, L4 | L3);
+				GPIO_ResetBits(stpport, L1 | L2);
 
 				if (Lrot_dir == 0) {
 					step_counterL++;
@@ -179,8 +91,8 @@ void TIM16_IRQHandler(void) {
 				}
 				break;
 			case 2:
-				GPIO_SetBits(stpport, L2);
-				GPIO_ResetBits(stpport, L1 | L3 | L4);
+				GPIO_SetBits(stpport, L3);
+				GPIO_ResetBits(stpport, L4 | L2 | L1);
 
 				if (Lrot_dir == 0) {
 					step_counterL++;
@@ -199,8 +111,8 @@ void TIM16_IRQHandler(void) {
 				}
 				break;
 			case 4:
-				GPIO_SetBits(stpport, L3);
-				GPIO_ResetBits(stpport, L2 | L1 | L4);
+				GPIO_SetBits(stpport, L2);
+				GPIO_ResetBits(stpport, L3 | L1 | L4);
 
 				if (Lrot_dir == 0) {
 					step_counterL++;
@@ -209,8 +121,8 @@ void TIM16_IRQHandler(void) {
 				}
 				break;
 			case 5:
-				GPIO_SetBits(stpport, L3 | L4);
-				GPIO_ResetBits(stpport, L2 | L1);
+				GPIO_SetBits(stpport, L1 | L2);
+				GPIO_ResetBits(stpport, L3 | L4);
 
 				if (Lrot_dir == 0) {
 					step_counterL++;
@@ -219,8 +131,8 @@ void TIM16_IRQHandler(void) {
 				}
 				break;
 			case 6:
-				GPIO_SetBits(stpport, L4);
-				GPIO_ResetBits(stpport, L2 | L3 | L1);
+				GPIO_SetBits(stpport, L1);
+				GPIO_ResetBits(stpport, L2 | L3 | L4);
 
 				if (Lrot_dir == 0) {
 					step_counterL++;
@@ -240,6 +152,94 @@ void TIM16_IRQHandler(void) {
 				break;
 			default:
 				step_counterL = 0;
+
+				break;
+			}
+		}
+		// L side
+		if (R_cmd != 0) {
+			switch (step_counterR) {
+			case 0:
+				GPIO_SetBits(stpport, R4);
+				GPIO_ResetBits(stpport, R2 | R3 | R1);
+				if (Rrot_dir == 0) {
+					step_counterR++;
+				} else {
+					step_counterR = 7;
+				}
+				break;
+			case 1:
+				GPIO_SetBits(stpport, R3 | R4);
+				GPIO_ResetBits(stpport, R1 | R2);
+
+				if (Rrot_dir == 0) {
+					step_counterR++;
+				} else {
+					step_counterR--;
+				}
+				break;
+			case 2:
+				GPIO_SetBits(stpport, R3);
+				GPIO_ResetBits(stpport, R1 | R2 | R4);
+
+				if (Rrot_dir == 0) {
+					step_counterR++;
+				} else {
+					step_counterR--;
+				}
+				break;
+			case 3:
+				GPIO_SetBits(stpport, R2 | R3);
+				GPIO_ResetBits(stpport, R1 | R4);
+
+				if (Rrot_dir == 0) {
+					step_counterR++;
+				} else {
+					step_counterR--;
+				}
+				break;
+			case 4:
+				GPIO_SetBits(stpport, R2);
+				GPIO_ResetBits(stpport, R3 | R1 | R4);
+
+				if (Rrot_dir == 0) {
+					step_counterR++;
+				} else {
+					step_counterR--;
+				}
+				break;
+			case 5:
+				GPIO_SetBits(stpport, R1 | R2);
+				GPIO_ResetBits(stpport, R3 | R4);
+
+				if (Rrot_dir == 0) {
+					step_counterR++;
+				} else {
+					step_counterR--;
+				}
+				break;
+			case 6:
+				GPIO_SetBits(stpport, R1);
+				GPIO_ResetBits(stpport, R2 | R3 | R4);
+
+				if (Rrot_dir == 0) {
+					step_counterR++;
+				} else {
+					step_counterR--;
+				}
+				break;
+			case 7:
+				GPIO_SetBits(stpport, R1 | R4);
+				GPIO_ResetBits(stpport, R2 | R3);
+
+				if (Rrot_dir == 0) {
+					step_counterR++;
+				} else {
+					step_counterR--;
+				}
+				break;
+			default:
+				step_counterR = 0;
 				break;
 			}
 		}

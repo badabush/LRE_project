@@ -23,7 +23,7 @@
 #include <sonar.h>
 
 #define std_steps 2000
-#define std_turn 1400
+#define std_turn 15.5
 
 /* STATUS FLAG DEFINITION
  * 0 - do nothing
@@ -50,12 +50,25 @@ int cycle = 4096; //cycles required for moving one distance
 char received_string[30];
 char rt_dir[1];
 
+int r_angle = 0; // right angle
+int l_angle = 0; // left angle
+
 //distances from sonar
 
 int dist_L = 0;
 int dist_C = 0;
 int dist_R = 0;
+
+int filt_L = 0;
+int filt_C = 0;
+int filt_R = 0;
 char sonar_dist[30];
+
+//declarations for filtering
+struct filter {
+	int L, C, R;
+};
+
 int main(void) {
 
 	/* ******************************************** */
@@ -73,7 +86,6 @@ int main(void) {
 	//init Sonar
 	SonarInit();
 
-
 	/* ******************************************** */
 	/* **************** Main Logic **************** */
 	/* ******************************************** */
@@ -81,6 +93,7 @@ int main(void) {
 		if (RX_flag == 1) {
 //			SendString("Main loop\n");
 //			//declarations for substring operations
+			char angle[3];
 			char str1[2];
 			char str2[2];
 			char str3[5];
@@ -104,22 +117,36 @@ int main(void) {
 					ds = atoi(str3) * 177;
 					cmd_forward();
 					SendString(printf("Moving Distance: %i", ds));
-				} else if (strcmp(str2, "rt") == 0) {
-					substring(received_string, rt_dir, 6, 1);
-					if (strcmp(rt_dir, "0") == 0) {
-						SendString("Rotating (+)\n");
-						cmd_Rturn();
-						ds = std_turn;
-					} else if (strcmp(rt_dir, "1") == 0) {
-						SendString("Rotating (-)\n");
-						cmd_Lturn();
-						ds = std_turn;
-					}
-				} else {
+				} else if (strcmp(str2, "rr") == 0) {
+					substring(received_string, angle, 6, 3);
+					ds = atoi(angle) * std_turn;
+					cmd_Rturn();
+					SendString(printf("Rotate CW: %i °\r\n", ds));
+					//angle = atoi(rt_dir);
+					//cmd_Rturn();
+//					if (strcmp(rt_dir, "0") == 0) {
+//						SendString("Rotating (+)\n");
+//						cmd_Rturn();
+//						ds = std_turn;
+//					} else if (strcmp(rt_dir, "1") == 0) {
+//						SendString("Rotating (-)\n");
+//						cmd_Lturn();
+//						ds = std_turn;
+//					}
+				} // else if rr
+				else if (strcmp(str2, "lr") == 0) {
+					substring(received_string, angle, 6, 3);
+					ds = atoi(angle) * std_turn;
+					cmd_Lturn();
+					SendString(printf("Rotate CCW: %i °\r\n", ds));
+				} //else if "lr"
+
+				else {
 					SendString("Unknown command.\n");
 				}
+			} //if "mv"
 
-			} else if (strcmp(received_string, "tm ps\r\n") == 0) {
+			else if (strcmp(received_string, "tm ps\r\n") == 0) {
 
 				SendString("Position: xyz\n");
 
@@ -150,8 +177,8 @@ int main(void) {
 				SendString("*** <Help Window> ***\nUsage of commands:\n"
 						"mv - Move forward\n"
 						"mv ds X - Move for X distance.\n"
-						"mv rt 0 - Rotate right.\n"
-						"mv rt 1 - Rotate left.\n"
+						"mv rr X - Rotate clockwise X°.\n"
+						"mv lr X - Rotate counter clockwise X°.\n"
 						"tm ps - position\n"
 						"tm od - odometry\n"
 						"tm hd - heading\n"
@@ -165,7 +192,8 @@ int main(void) {
 
 			clearRXBuffer();
 			RX_flag = 0;
-		}
+		} //RX flag == 1
+	} //while(1)
 //		//set **global_flag** from USART IRQHandler, do something *here* (asking for flags, doing commands from here)
-	}
+
 }

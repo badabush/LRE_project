@@ -17,16 +17,16 @@ void cmd_backward(void) {
 
 void cmd_Lturn(void) {
 
-	Lrot_dir = 1;
-	Rrot_dir = 0;
+	Lrot_dir = 0;
+	Rrot_dir = 1;
 	R_cmd = 1;
 	L_cmd = 1;
 }
 
 void cmd_Rturn(void) {
 
-	Lrot_dir = 0;
-	Rrot_dir = 1;
+	Lrot_dir = 1;
+	Rrot_dir = 0;
 	R_cmd = 1;
 	L_cmd = 1;
 }

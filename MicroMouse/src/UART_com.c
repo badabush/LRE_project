@@ -60,6 +60,7 @@ void SendString(char *str) {
 }
 
 unsigned char cnt = 0;
+
 void USART1_IRQHandler(void) {
 
 	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET) {
