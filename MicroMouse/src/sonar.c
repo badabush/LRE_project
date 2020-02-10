@@ -90,8 +90,14 @@ void EXTI4_15_IRQHandler(void) {
 			dist_R = t_echo_R * 0.034;
 			if (dist_R > 400)
 				dist_R = 0;
+
 			//filter distance
 			dist_R, cnt_R = sonar_filtering(dist_R, dsarrayR, cnt_R);
+			//wall flag
+			if (dist_R < 2.0)
+				wall_R = 1;
+			else
+				wall_R = 0;
 
 		}
 		EXTI_ClearITPendingBit(EXTI_Line6);
@@ -109,6 +115,12 @@ void EXTI4_15_IRQHandler(void) {
 			if (dist_C > 400)
 				dist_C = 0;
 			dist_C, cnt_C = sonar_filtering(dist_C, dsarrayC, cnt_C);
+			//wall flag
+			if (dist_C < 5) {
+				SendString("Wall C detected.\n");
+				wall_C = 1;
+			} else
+				wall_C = 0;
 
 		}
 		EXTI_ClearITPendingBit(EXTI_Line11);
@@ -126,6 +138,13 @@ void EXTI4_15_IRQHandler(void) {
 			if (dist_L > 400)
 				dist_L = 0;
 			dist_L, cnt_L = sonar_filtering(dist_L, dsarrayL, cnt_L);
+			//wall flag
+			if (dist_L < 5) {
+				wall_L = 1;
+
+				SendString("Wall L detected.\n");
+			} else
+				wall_L = 0;
 		}
 
 		EXTI_ClearITPendingBit(EXTI_Line4);

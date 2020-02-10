@@ -4,7 +4,9 @@
 #include "stm32f072b_discovery.h"
 #include "stdio.h"
 
-#define array_len 30
+#define array_len 20
+#define ds_multiplier 177
+#define cell 20
 
 void substring(char s[], char sub[], int p, int l);
 

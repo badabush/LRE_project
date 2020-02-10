@@ -18,8 +18,8 @@ int sonar_filtering(int ds, int dsarray[array_len], int i) {
 		dsarray[i] = ds;
 		if (filled == 1) {
 			//start filtering as soon as 5 values are written into the array
-			for (int i=0;i<=array_len;i++){
-			sorted[i] = dsarray[i];
+			for (int i = 0; i <= array_len; i++) {
+				sorted[i] = dsarray[i];
 			}
 			Array_sort(sorted, array_len);
 			ds = Find_median(sorted, array_len);
@@ -64,5 +64,15 @@ int Find_median(int array[], int n) {
 	// if number of elements are odd
 	else
 		median = array[n / 2];
-	return (int)median;
+	return (int) median;
 }
+
+int ds_true(ds) {
+	ds = ds * ds_multiplier;
+	return ds;
+}
+
+void cell_followR() {
+	ds = ds_true(cell/2);
+}
+

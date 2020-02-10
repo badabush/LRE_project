@@ -64,6 +64,11 @@ int filt_C = 0;
 int filt_R = 0;
 char sonar_dist[30];
 
+//flags for wall L/C/R
+int wall_L = 0;
+int wall_C = 0;
+int wall_R = 0;
+
 //declarations for filtering
 struct filter {
 	int L, C, R;
@@ -97,6 +102,8 @@ int main(void) {
 			char str1[2];
 			char str2[2];
 			char str3[5];
+			char str_cmd[2];
+			char str5[4];
 			substring(received_string, str1, 0, 2);
 			if (strcmp(received_string, "mv fw\r\n") == 0) {
 
@@ -122,17 +129,6 @@ int main(void) {
 					ds = atoi(angle) * std_turn;
 					cmd_Rturn();
 					SendString(printf("Rotate CW: %i °\r\n", ds));
-					//angle = atoi(rt_dir);
-					//cmd_Rturn();
-//					if (strcmp(rt_dir, "0") == 0) {
-//						SendString("Rotating (+)\n");
-//						cmd_Rturn();
-//						ds = std_turn;
-//					} else if (strcmp(rt_dir, "1") == 0) {
-//						SendString("Rotating (-)\n");
-//						cmd_Lturn();
-//						ds = std_turn;
-//					}
 				} // else if rr
 				else if (strcmp(str2, "lr") == 0) {
 					substring(received_string, angle, 6, 3);
@@ -140,27 +136,27 @@ int main(void) {
 					cmd_Lturn();
 					SendString(printf("Rotate CCW: %i °\r\n", ds));
 				} //else if "lr"
-
-				else {
-					SendString("Unknown command.\n");
-				}
-			} //if "mv"
-
-			else if (strcmp(received_string, "tm ps\r\n") == 0) {
-
-				SendString("Position: xyz\n");
-
-			} else if (strcmp(received_string, "tm od\r\n") == 0) {
-
-				SendString("Traveled Distance\n");
-
-			} else if (strcmp(received_string, "tm hd\r\n") == 0) {
-
-				SendString("Heading\n");
-
-			} else if (strcmp(received_string, "tm cu\r\n") == 0) {
-
-				SendString("Current usage: ? mA\n");
+				  //routine for cmds
+			} else if (strcmp(received_string, "cmd park\r\n") == 0) {
+				cmd_park();
+			} else if (strcmp(received_string, "cmd follow R\r\n") == 0) {
+				cmd_followR();
+//
+//			else if (strcmp(received_string, "tm ps\r\n") == 0) {
+//
+//				SendString("Position: xyz\n");
+//
+//			} else if (strcmp(received_string, "tm od\r\n") == 0) {
+//
+//				SendString("Traveled Distance\n");
+//
+//			} else if (strcmp(received_string, "tm hd\r\n") == 0) {
+//
+//				SendString("Heading\n");
+//
+//			} else if (strcmp(received_string, "tm cu\r\n") == 0) {
+//
+//				SendString("Current usage: ? mA\n");
 
 			} else if (strcmp(received_string, "tm us\r\n") == 0) {
 
@@ -189,7 +185,6 @@ int main(void) {
 			} else {
 				SendString("Instruction not known, type help for commands.\n");
 			}
-
 			clearRXBuffer();
 			RX_flag = 0;
 		} //RX flag == 1

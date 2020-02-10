@@ -69,16 +69,9 @@ void USART1_IRQHandler(void) {
 			char t = USART1->RDR;
 			received_string[cnt++] = t;
 			if (t == '\n') {
-//			/*clean up \n when in first position*/
-//			if (received_string[0] == '\n') {
-//				memmove(received_string, received_string + 1,
-//						strlen(received_string));
-//			}
 				RX_flag = 1;
 				SendString(received_string);
-//				clearRXBuffer();
 				//TODO:replace \r\n with \0
-//			USART_ClearITPendingBit(USART1, USART_IT_RXNE);
 			}
 		}
 
