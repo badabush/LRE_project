@@ -1,58 +1,62 @@
 #include <moves.h>
 /* Orchastrates move patterns */
 
-void cmd_forward(void) {
+void cmd_forward(int dist) {
 	Lrot_dir = 0;
 	Rrot_dir = 0;
 	R_cmd = 1;
 	L_cmd = 1;
+	ds = dist * ds_multiplier
+	;
+	DelayMil(250 * dist);
 }
 
-void cmd_backward(void) {
+void cmd_backward(int dist) {
 	Lrot_dir = 1;
 	Rrot_dir = 1;
 	R_cmd = 1;
 	L_cmd = 1;
+	ds = dist * ds_multiplier
+	;
+	DelayMil(250 * dist);
 }
 
-void cmd_Lturn(void) {
+void cmd_Lturn(int deg) {
 
 	Lrot_dir = 0;
 	Rrot_dir = 1;
 	R_cmd = 1;
 	L_cmd = 1;
+	ds = deg * std_turn;
+	DelayMil(25 * deg);
 }
 
-void cmd_Rturn(void) {
+void cmd_Rturn(int deg) {
 
 	Lrot_dir = 1;
 	Rrot_dir = 0;
 	R_cmd = 1;
 	L_cmd = 1;
+	ds = deg * std_turn;
+	DelayMil(25 * deg);
 }
 
 void cmd_park(void) {
 	//parking algorithm. Move forward towards wall and do 180 if gotten close.
-	ds = ds_true(1000);
-	cmd_forward();
+	cmd_forward(1000);
 	SendString("*** Starting sequence Parking ***\n\n");
 	while (wall_C == 0) {
 		ds = 10;
 	}
 
-	cmd_Lturn();
-	ds = 180 * std_turn;
+	cmd_Lturn(180);
 }
 
 void cmd_shake(void) {
 	//start shaking left and right wildly if it has absolutely no idea what to do.
 	for (int i; i < 5; i++) {
-		cmd_Lturn();
-		ds = ds_true(10);
-		DelaySec(1);
-		cmd_Rturn();
-		ds = ds_true(10);
-		DelaySec(1);
+		cmd_Lturn(10);
+		cmd_Rturn(10);
 	}
 }
 
@@ -82,45 +86,26 @@ void cmd_follow(void) {
 		//routine if false measurement
 		while ((ds_wall == 999)) {
 			//error handle, let mouse drive 5cm bw
-			cmd_backward();
-			ds = ds_true(1);
-			DelayMil(1000);
+			cmd_backward(1);
 			ds_wall = dist_L;
 		}
-		//approach wall fast
-		cmd_Lturn();
-		ds = (70 * std_turn);
-		DelaySec(2);
-
-		cmd_forward();
-		ds = ds_true(abs(ds_wall - des_dist));
-		DelaySec(5);
-
-		cmd_Rturn();
-		ds = (70 * std_turn);
-		DelaySec(2);
+		/*approach wall fast
+		 * turn, drive diff, turn back
+		 */
+		cmd_Lturn(70);
+		cmd_forward(abs(ds_wall - des_dist));
+		cmd_Rturn(70);
 
 	} else if (dist_L < (des_dist - 10)) {
 		//routine if false measurement
 		while ((ds_wall == 999)) {
 			//error handle, let mouse drive 5cm bw
-			cmd_backward();
-			ds = ds_true(1);
-			DelayMil(1000);
+			cmd_backward(1);
 			ds_wall = dist_L;
 		}
-		//approach wall fast
-		cmd_Rturn();
-		ds = (70 * std_turn);
-		DelaySec(2);
-
-		cmd_forward();
-		ds = ds_true(abs(ds_wall - des_dist));
-		DelaySec(5);
-
-		cmd_Lturn();
-		ds = (70 * std_turn);
-		DelaySec(2);
+		cmd_Rturn(70);
+		cmd_forward(abs(ds_wall - des_dist));
+		cmd_Lturn(70);
 	}
 
 	int prior_diff = ds_wall - des_dist;	//to wall
@@ -132,9 +117,7 @@ void cmd_follow(void) {
 		//only correct if divergence>2
 		while ((ds_wall == 999) || (ds_wall < 8)) {
 			//error handle, let mouse drive 5cm bw
-			cmd_backward();
-			ds = ds_true(1);
-			DelayMil(1000);
+			cmd_backward(1);
 			ds_wall = dist_L;
 
 		}
@@ -155,9 +138,7 @@ void cmd_follow(void) {
 					angle = 10;
 					add_angle = add_angle + angle;
 				}
-				cmd_Lturn();
-				ds = angle * std_turn;
-				DelaySec(1);
+				cmd_Lturn(angle);
 			} else if (ds_wall < des_dist) {
 				//got close to the wall
 
@@ -171,26 +152,18 @@ void cmd_follow(void) {
 					angle = 10;
 					add_angle = add_angle - angle;
 				}
-				cmd_Rturn();
-				ds = angle * std_turn;
-				DelaySec(1);
+				cmd_Rturn(angle);
 			}
 		}
-		cmd_forward();
-		ds = ds_true(cell / 4);
-		DelayMil(1100);
+		cmd_forward(cell / 4);
 
 		//if cumulative angle exceeds 45 deg
 		if (abs(add_angle) > 45) {
 			angle = 60;
 			if (add_angle > 0) {
-				cmd_Rturn();
-				ds = angle * std_turn;
-				DelaySec(1);
+				cmd_Rturn(angle);
 			} else {
-				cmd_Lturn();
-				ds = angle * std_turn;
-				DelaySec(1);
+				cmd_Lturn(angle);
 			}
 			add_angle = 0;
 		}

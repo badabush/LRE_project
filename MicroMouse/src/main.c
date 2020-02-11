@@ -36,7 +36,7 @@
 
 int status_flag = 0;
 int sonar_flag = 0;
-int RX_flag = 0;
+volatile int RX_flag = 0;
 int TX_flag = 0;
 
 int R_cmd = 0;
@@ -75,7 +75,6 @@ int des_dist = 20;
 //Define time keeping variables
 volatile uint32_t Milliseconds = 0, Seconds = 0;
 
-
 //declarations for filtering
 struct filter {
 	int L, C, R;
@@ -107,6 +106,7 @@ int main(void) {
 	/* ******************************************** */
 	while (1) {
 		if (RX_flag == 1) {
+			RX_flag = 0;
 //			SendString("Main loop\n");
 //			//declarations for substring operations
 			char angle[3];
@@ -120,32 +120,30 @@ int main(void) {
 
 				SendString("Moving forwards.\n");
 				//TODO:implement reading "mv ds *val*": read value from string to get distance.
-				ds = std_steps;
-				cmd_forward();
+
+				cmd_forward(std_steps);
 				//call pattern to drive
 			} else if (strcmp(received_string, "mv bw\r\n") == 0) {
 				SendString("Moving backwards.\n");
-				ds = std_steps;
-				cmd_backward();
+				cmd_backward(std_steps);
 
 			} else if (strcmp(str1, "mv") == 0) {
 				substring(received_string, str2, 3, 2);
 				if (strcmp(str2, "ds") == 0) {
 					substring(received_string, str3, 6, 5);
-					ds = atoi(str3) * 177;
-					cmd_forward();
+					cmd_forward(atoi(str3));
 					SendString(printf("Moving Distance: %i", ds));
 				} else if (strcmp(str2, "rr") == 0) {
 					substring(received_string, angle, 6, 3);
-					ds = atoi(angle) * std_turn;
-					cmd_Rturn();
+					cmd_Rturn(atoi(angle));
 					SendString(printf("Rotate CW: %i °\r\n", ds));
+
 				} // else if rr
 				else if (strcmp(str2, "lr") == 0) {
 					substring(received_string, angle, 6, 3);
-					ds = atoi(angle) * std_turn;
-					cmd_Lturn();
+					cmd_Lturn(atoi(angle));
 					SendString(printf("Rotate CCW: %i °\r\n", ds));
+
 				} //else if "lr"
 				  //routine for cmds
 			} else if (strcmp(received_string, "cmd park\r\n") == 0) {
@@ -162,6 +160,10 @@ int main(void) {
 			} else if (strcmp(received_string, "stop\r\n") == 0) {
 
 				SendString("stop motors.\n");
+
+			} else if (strcmp(received_string, "sandbox\r\n") == 0) {
+
+//				ds = cmd_forward2(10);
 
 			} else if (strcmp(received_string, "help\r\n") == 0) {
 

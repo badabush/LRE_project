@@ -18,7 +18,7 @@
 
 
 extern char received_string[];
-extern int RX_flag;
+extern volatile int RX_flag;
 extern int TX_flag;
 void UARTGPIOInit(void);
 void SendString(char *str);
