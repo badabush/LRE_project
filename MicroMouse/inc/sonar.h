@@ -17,12 +17,5 @@ extern int wall_R;
 extern int wall_C;
 extern int wall_L;
 
-
-/*Sonar flag:
- * flag 0 - check L
- * flag 1 - check R
- * flag 2 - check C
- * */
-
 void SonarInit(void);
 void EXTI4_15_IRQHandler(void);

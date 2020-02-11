@@ -121,10 +121,8 @@ void cmd_follow(void) {
 			ds_wall = dist_L;
 
 		}
+		//start correction when > +-1 from des_dist
 		if (abs(diff) > 1) {
-			//increase angle when distance is growing/shrinking
-//			if ((diff-prior_diff)>5)
-//				angle=angle+5;
 			if (ds_wall > des_dist) {
 				//got further away from wall
 
@@ -167,7 +165,6 @@ void cmd_follow(void) {
 			}
 			add_angle = 0;
 		}
-//		DelaySec(3);
 		prior_diff = diff;
 	}
 

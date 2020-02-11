@@ -4,7 +4,6 @@
 #include "stdio.h"
 
 #define array_len 600
-#define ds_multiplier 177
 #define cell 20
 
 int extern ds;

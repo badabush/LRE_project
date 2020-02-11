@@ -36,6 +36,7 @@ int sonar_filtering(int ds, int dsarray[array_len], int i, int filled) {
 	i++;
 	return ds, i, filled;
 }
+
 // function to sort the array in ascending order
 void Array_sort(int *array, int n) {
 // declare some local variables
@@ -68,18 +69,4 @@ int Find_median(int array[], int n) {
 	else
 		median = array[n / 2];
 	return (int) median;
-}
-
-int ds_true( ds) {
-	ds = ds * ds_multiplier;
-	return ds;
-}
-
-void cell_followR() {
-	ds = ds_true(cell / 2);
-}
-
-void wait_ds() {
-	while (moving == 1)
-		;
 }

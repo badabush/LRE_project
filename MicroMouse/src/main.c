@@ -113,16 +113,11 @@ int main(void) {
 			char str1[2];
 			char str2[2];
 			char str3[5];
-			char str_cmd[2];
-			char str5[4];
 			substring(received_string, str1, 0, 2);
 			if (strcmp(received_string, "mv fw\r\n") == 0) {
 
 				SendString("Moving forwards.\n");
-				//TODO:implement reading "mv ds *val*": read value from string to get distance.
-
 				cmd_forward(std_steps);
-				//call pattern to drive
 			} else if (strcmp(received_string, "mv bw\r\n") == 0) {
 				SendString("Moving backwards.\n");
 				cmd_backward(std_steps);
@@ -133,19 +128,18 @@ int main(void) {
 					substring(received_string, str3, 6, 5);
 					cmd_forward(atoi(str3));
 					SendString(printf("Moving Distance: %i", ds));
+
 				} else if (strcmp(str2, "rr") == 0) {
 					substring(received_string, angle, 6, 3);
 					cmd_Rturn(atoi(angle));
-					SendString(printf("Rotate CW: %i °\r\n", ds));
+					SendString(printf("Rotate CW: %i\r\n", ds));
 
-				} // else if rr
-				else if (strcmp(str2, "lr") == 0) {
+				} else if (strcmp(str2, "lr") == 0) {
 					substring(received_string, angle, 6, 3);
 					cmd_Lturn(atoi(angle));
-					SendString(printf("Rotate CCW: %i °\r\n", ds));
-
-				} //else if "lr"
-				  //routine for cmds
+					SendString(printf("Rotate CCW: %i\r\n", ds));
+				}
+				//routine for cmds
 			} else if (strcmp(received_string, "cmd park\r\n") == 0) {
 				cmd_park();
 			} else if (strcmp(received_string, "cmd follow\r\n") == 0) {
@@ -172,11 +166,9 @@ int main(void) {
 						"mv ds X - Move for X distance.\n"
 						"mv rr X - Rotate clockwise X°.\n"
 						"mv lr X - Rotate counter clockwise X°.\n"
-						"tm ps - position\n"
-						"tm od - odometry\n"
-						"tm hd - heading\n"
-						"tm cu - current\n"
 						"tm us - ultrasonic\n"
+						"cmd follow - follow left wall.\n"
+						"cmd park - drive until wall, do 180."
 						"*** </Help Window> ***\n\n");
 
 			} else {
@@ -184,9 +176,6 @@ int main(void) {
 			}
 			clearRXBuffer();
 			RX_flag = 0;
-		} //RX flag == 1
-
+		}
 	} //while(1)
-//		//set **global_flag** from USART IRQHandler, do something *here* (asking for flags, doing commands from here)
-
 }
