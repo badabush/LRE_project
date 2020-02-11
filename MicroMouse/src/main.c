@@ -15,15 +15,15 @@
 #include <stm32f072b_discovery.h>
 #include <tools.h>
 #include <UART_com.h>
-#include <lre_wait.h>
-
 #include <moves.h>
 #include <StepMotor.h>
 
 #include <sonar.h>
+#include <wait.h>
 
 #define std_steps 2000
 #define std_turn 15.5
+#define MillisecondsIT 1e3
 
 /* STATUS FLAG DEFINITION
  * 0 - do nothing
@@ -69,6 +69,13 @@ int wall_L = 0;
 int wall_C = 0;
 int wall_R = 0;
 
+//design distance for follow wall
+int des_dist = 20;
+
+//Define time keeping variables
+volatile uint32_t Milliseconds = 0, Seconds = 0;
+
+
 //declarations for filtering
 struct filter {
 	int L, C, R;
@@ -91,6 +98,10 @@ int main(void) {
 	//init Sonar
 	SonarInit();
 
+	//init wait timer
+	SystemInit(); //Ensure CPU is running at correctly set clock speed
+	SystemCoreClockUpdate(); //Update SystemCoreClock variable to current clock speed
+	SysTick_Config(SystemCoreClock / MillisecondsIT); //Set up a systick interrupt every millisecond
 	/* ******************************************** */
 	/* **************** Main Logic **************** */
 	/* ******************************************** */
@@ -139,24 +150,8 @@ int main(void) {
 				  //routine for cmds
 			} else if (strcmp(received_string, "cmd park\r\n") == 0) {
 				cmd_park();
-			} else if (strcmp(received_string, "cmd follow R\r\n") == 0) {
-				cmd_followR();
-//
-//			else if (strcmp(received_string, "tm ps\r\n") == 0) {
-//
-//				SendString("Position: xyz\n");
-//
-//			} else if (strcmp(received_string, "tm od\r\n") == 0) {
-//
-//				SendString("Traveled Distance\n");
-//
-//			} else if (strcmp(received_string, "tm hd\r\n") == 0) {
-//
-//				SendString("Heading\n");
-//
-//			} else if (strcmp(received_string, "tm cu\r\n") == 0) {
-//
-//				SendString("Current usage: ? mA\n");
+			} else if (strcmp(received_string, "cmd follow\r\n") == 0) {
+				cmd_follow();
 
 			} else if (strcmp(received_string, "tm us\r\n") == 0) {
 
@@ -183,11 +178,12 @@ int main(void) {
 						"*** </Help Window> ***\n\n");
 
 			} else {
-				SendString("Instruction not known, type help for commands.\n");
+				SendString("Instruction not known.\n");
 			}
 			clearRXBuffer();
 			RX_flag = 0;
 		} //RX flag == 1
+
 	} //while(1)
 //		//set **global_flag** from USART IRQHandler, do something *here* (asking for flags, doing commands from here)
 

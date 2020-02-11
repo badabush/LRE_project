@@ -36,6 +36,10 @@ int cnt_C = 0;
 int dsarrayR[array_len];
 int dsarrayL[array_len];
 int dsarrayC[array_len];
+//flag if first array is filled
+int filled_R = 0;
+int filled_C = 0;
+int filled_L = 0;
 
 uint16_t t_echo_R;
 uint16_t t_echo_L;
@@ -88,17 +92,20 @@ void EXTI4_15_IRQHandler(void) {
 
 			t_echo_R = t9_R - t0_R;
 			dist_R = t_echo_R * 0.034;
-			if (dist_R > 400)
-				dist_R = 0;
 
 			//filter distance
-			dist_R, cnt_R = sonar_filtering(dist_R, dsarrayR, cnt_R);
+			dist_R, cnt_R, filled_R = sonar_filtering(dist_R, dsarrayR, cnt_R,
+					filled_R);
+			if (dist_R > 50)
+				dist_R = 999;
 			//wall flag
-			if (dist_R < 2.0)
+			if (dist_R < 5)
 				wall_R = 1;
 			else
 				wall_R = 0;
-
+			char sonar_dist[10];
+			sprintf(sonar_dist, "R: %5i cm;", dist_R);
+			SendString(sonar_dist);
 		}
 		EXTI_ClearITPendingBit(EXTI_Line6);
 	} //getflagstatus_line6
@@ -114,10 +121,8 @@ void EXTI4_15_IRQHandler(void) {
 			dist_C = t_echo_C * 0.034;
 			if (dist_C > 400)
 				dist_C = 0;
-			dist_C, cnt_C = sonar_filtering(dist_C, dsarrayC, cnt_C);
 			//wall flag
 			if (dist_C < 5) {
-				SendString("Wall C detected.\n");
 				wall_C = 1;
 			} else
 				wall_C = 0;
@@ -137,18 +142,18 @@ void EXTI4_15_IRQHandler(void) {
 			dist_L = t_echo_L * 0.034;
 			if (dist_L > 400)
 				dist_L = 0;
-			dist_L, cnt_L = sonar_filtering(dist_L, dsarrayL, cnt_L);
+			dist_L, cnt_L, filled_L = sonar_filtering(dist_L, dsarrayL, cnt_L,
+					filled_L);
 			//wall flag
-			if (dist_L < 5) {
+			if (dist_L < 5)
 				wall_L = 1;
-
-				SendString("Wall L detected.\n");
-			} else
+			else
 				wall_L = 0;
-		}
-
+			char sonar_dist[10];
+			sprintf(sonar_dist, "L: %5i cm\n", dist_L);
+			SendString(sonar_dist);
+		} //getflagstatus_line4
 		EXTI_ClearITPendingBit(EXTI_Line4);
-	} //getflagstatus_line4
-
+	}
 } //EXTI4_15
 

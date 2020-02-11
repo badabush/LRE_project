@@ -1,6 +1,5 @@
 #include <UART_com.h>
 
-
 void UARTGPIOInit(void) {
 	GPIO_InitTypeDef gpioInitStruct;
 	USART_InitTypeDef usartInitStruct;
@@ -37,10 +36,10 @@ void UARTGPIOInit(void) {
 	USART_Cmd(USART1, ENABLE);
 	/* Enable RXNE interrupt */
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-	/* Enable TXNE interrupt */
+	/* Enable TXE interrupt */
 	USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
 	/* Enable USART1 global interrupt */
-//	NVIC_EnableIRQ(USART1_IRQn);
+	NVIC_EnableIRQ(USART1_IRQn);
 }
 
 char OUT_rate[80]; // what to send
@@ -72,6 +71,7 @@ void USART1_IRQHandler(void) {
 				RX_flag = 1;
 				SendString(received_string);
 				//TODO:replace \r\n with \0
+//				clearRXBuffer();
 			}
 		}
 

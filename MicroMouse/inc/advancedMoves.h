@@ -5,9 +5,9 @@
  *      Author: Willi
  */
 
-extern int filt_L = 0;
-extern int filt_C = 0;
-extern int filt_R = 0;
+extern int dist_L;
+extern int dist_C;
+extern int dist_R;
 
 int dummy;
 int cellDist; // length of a cell

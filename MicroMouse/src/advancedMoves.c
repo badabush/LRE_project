@@ -13,14 +13,14 @@ desiredDist =dummy; // dummy:(command: move ... distance/ ... cells)
 
 	void cmd_forward_wall(void)
 	{
-		if (filt_L <= xLmin) // follow left wall
+		if (dist_L <= xLmin) // follow left wall
 		{
-			xLold=filt_L;
+			xLold=dist_L;
 			for (movedDist=0; movedDist<desiredDist; movedDist++)
 			{
 				cmd_forward(cellDist); //  mv 1 cell fw; fct has to be changed so you can set a forward driving dist
 
-				xLlive=filt_L;	// measure and save dist to Lwall
+				xLlive=dist_L;	// measure and save dist to Lwall
 				xLdiff=xLlive-xLold;
 				reqTurn=tan((2*3.14159265/360)*(abs(xLdiff)/cellDist)); // tan output is in rad
 				if (xLdiff<0)
@@ -36,7 +36,7 @@ desiredDist =dummy; // dummy:(command: move ... distance/ ... cells)
 
 
 		}
-		else if (filt_R <= xRmin) // follow right wall
+		else if (dist_R <= xRmin) // follow right wall
 		{
 
 		}
