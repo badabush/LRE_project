@@ -43,13 +43,17 @@ void cmd_Rturn(int deg) {
 
 void cmd_park(void) {
 	//parking algorithm. Move forward towards wall and do 180 if gotten close.
-	cmd_forward(1000);
 	SendString("*** Starting sequence Parking ***\n\n");
-	while (wall_C == 0) {
-		ds = 10;
+	while (dist_C > 10) {
+		Lrot_dir = 0;
+		Rrot_dir = 0;
+		R_cmd = 1;
+		L_cmd = 1;
+		ds = 2 * 177;
 	}
 
 	cmd_Lturn(180);
+	cmd_backward(3);
 }
 
 void cmd_shake(void) {
@@ -80,7 +84,7 @@ void cmd_follow(int tot_dist) {
 	int angle = 10;
 	int diff = 0;
 	int ds_wall = dist_L;
-	int driven_dist=0;
+	int driven_dist = 0;
 	while (driven_dist <= tot_dist) {
 		//init, approach wall to +-10cm diff
 		//if wall is further away than 10cm
@@ -169,7 +173,7 @@ void cmd_follow(int tot_dist) {
 				add_angle = 0;
 			}
 			prior_diff = diff;
-			if (dist_C<10)
+			if (dist_C < 10)
 				cmd_Rturn(90);
 		}
 	}
