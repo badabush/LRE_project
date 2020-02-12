@@ -70,7 +70,7 @@ int wall_C = 0;
 int wall_R = 0;
 
 //design distance for follow wall
-int des_dist = 20;
+int des_dist = 15;
 
 //Define time keeping variables
 volatile uint32_t Milliseconds = 0, Seconds = 0;
@@ -143,7 +143,9 @@ int main(void) {
 			} else if (strcmp(received_string, "cmd park\r\n") == 0) {
 				cmd_park();
 			} else if (strcmp(received_string, "cmd follow\r\n") == 0) {
-				cmd_follow();
+				cmd_follow(200);
+			} else if (strcmp(received_string, "cmd corner\r\n") == 0) {
+				cmd_corner();
 
 			} else if (strcmp(received_string, "tm us\r\n") == 0) {
 

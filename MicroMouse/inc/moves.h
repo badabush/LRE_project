@@ -30,4 +30,4 @@ void cmd_Lturn(int deg);
 void cmd_Rturn(int deg);
 
 void cmd_park(void);
-void cmd_follow(void);
+void cmd_follow(int tot_dist);
