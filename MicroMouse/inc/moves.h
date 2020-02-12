@@ -17,6 +17,7 @@ extern int L_cmd;
 
 extern int wall_C;
 
+extern int side;
 //distances from sensors
 extern int dist_R;
 extern int dist_C;

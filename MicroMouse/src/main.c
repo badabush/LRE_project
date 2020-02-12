@@ -70,7 +70,10 @@ int wall_C = 0;
 int wall_R = 0;
 
 //design distance for follow wall
-int des_dist = 15;
+int des_dist = 5; //CHANGE THIS FOR DISTANCE TO WALL!!!!
+
+//which side got detected
+int side = 0; // 0=unknown, 1=R, 2=L
 
 //Define time keeping variables
 volatile uint32_t Milliseconds = 0, Seconds = 0;
