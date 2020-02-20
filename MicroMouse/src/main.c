@@ -180,6 +180,37 @@ int main(void) {
 				assert(pf9>=0);
 				assert(pf9<=48);
 				cmd_pathfinder(pf0, pf9);
+
+			} else if (strcmp(str4, "cmd se")==0) {
+				char pf_start[2];
+				char pf_end[2];
+				substring(received_string, pf_start, 7, 2);
+				substring(received_string, pf_end, 10, 2);
+				int pf0;
+				int pf9;
+				pf0 = atoi(pf_start);
+				pf9 = atoi(pf_end);
+				assert(pf0>=0);
+				assert(pf0<=48);
+				assert(pf9>=0);
+				assert(pf9<=48);
+				cmd_search(pf0, pf9);
+
+			} else if (strcmp(str4, "cmd fi")==0) {
+				char pf_start[2];
+				char pf_end[2];
+				substring(received_string, pf_start, 7, 2);
+				substring(received_string, pf_end, 10, 2);
+				int pf0;
+				int pf9;
+				pf0 = atoi(pf_start);
+				pf9 = atoi(pf_end);
+				assert(pf0>=0);
+				assert(pf0<=48);
+				assert(pf9>=0);
+				assert(pf9<=48);
+				cmd_find(pf0, pf9);
+
 			} else if (strcmp(received_string, "help\r\n") == 0) {
 
 				SendString("*** <Help Window> ***\nUsage of commands:\n"
