@@ -103,9 +103,9 @@ void EXTI4_15_IRQHandler(void) {
 				wall_R = 1;
 			else
 				wall_R = 0;
-			char sonar_dist[10];
-			sprintf(sonar_dist, "R: %2i cm;\n", dist_R);
-			SendString(sonar_dist);
+//			char sonar_dist[10];
+//			sprintf(sonar_dist, "R: %2i cm;\n", dist_R);
+//			SendString(sonar_dist);
 		}
 		EXTI_ClearITPendingBit(EXTI_Line6);
 	} //getflagstatus_line6
@@ -122,7 +122,7 @@ void EXTI4_15_IRQHandler(void) {
 			if (dist_C > 400)
 				dist_C = 0;
 			//wall flag
-			if (dist_C < 5) {
+			if (dist_C < 3) {
 				wall_C = 1;
 			} else
 				wall_C = 0;

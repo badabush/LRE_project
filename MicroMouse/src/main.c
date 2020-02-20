@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stm32f0xx.h>
 #include <stm32f072b_discovery.h>
+#include <assert.h>
 #include <tools.h>
 #include <UART_com.h>
 #include <moves.h>
@@ -70,7 +71,7 @@ int wall_C = 0;
 int wall_R = 0;
 
 //design distance for follow wall
-int des_dist = 5; //CHANGE THIS FOR DISTANCE TO WALL!!!!
+int des_dist = 4; //CHANGE THIS FOR DISTANCE TO WALL!!!!
 
 //which side got detected
 int side = 0; // 0=unknown, 1=R, 2=L
@@ -174,6 +175,10 @@ int main(void) {
 				int pf9;
 				pf0 = atoi(pf_start);
 				pf9 = atoi(pf_end);
+				assert(pf0>=0);
+				assert(pf0<=48);
+				assert(pf9>=0);
+				assert(pf9<=48);
 				cmd_pathfinder(pf0, pf9);
 			} else if (strcmp(received_string, "help\r\n") == 0) {
 

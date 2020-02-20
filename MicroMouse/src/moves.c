@@ -81,9 +81,6 @@ void cmd_follow(int tot_dist) {
 	 * side unclear
 	 * */
 	int i;
-	int angle = 10;
-	int diff = 0;
-	int ds_wall = dist_L;
 	int driven_dist = 0;
 	int prior_dist = 0;
 	int abs_dist = 0;
@@ -142,8 +139,8 @@ void cmd_follow(int tot_dist) {
 				}
 			}
 		}
-		cmd_forward(10);
-		driven_dist += 10;
+		cmd_forward(9);
+		driven_dist += 9;
 		if (side == 1) {
 			prior_dist = dist_R;
 		} else {
