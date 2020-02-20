@@ -3,7 +3,7 @@
 #include "stm32f072b_discovery.h"
 #include "stdio.h"
 
-#define array_len 800
+#define array_len 50
 #define cell 20
 
 int extern ds;

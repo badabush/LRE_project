@@ -116,7 +116,9 @@ int main(void) {
 			char str1[2];
 			char str2[2];
 			char str3[5];
+			char str4[6];
 			substring(received_string, str1, 0, 2);
+			substring(received_string, str4, 0, 6);
 			if (strcmp(received_string, "mv fw\r\n") == 0) {
 
 				SendString("Moving forwards.\n");
@@ -163,7 +165,16 @@ int main(void) {
 			} else if (strcmp(received_string, "sandbox\r\n") == 0) {
 
 //				ds = cmd_forward2(10);
-
+			} else if (strcmp(str4, "cmd pf")==0) {
+				char pf_start[2];
+				char pf_end[2];
+				substring(received_string, pf_start, 7, 2);
+				substring(received_string, pf_end, 10, 2);
+				int pf0;
+				int pf9;
+				pf0 = atoi(pf_start);
+				pf9 = atoi(pf_end);
+				cmd_pathfinder(pf0, pf9);
 			} else if (strcmp(received_string, "help\r\n") == 0) {
 
 				SendString("*** <Help Window> ***\nUsage of commands:\n"
