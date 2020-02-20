@@ -49,6 +49,26 @@ void permutate () {
 		maze[currCell].perm[j] = maze[currCell].ini[j];// no perm
 	}
 }
+void drive(){
+	for(j=0; j<4; j++){
+		if(maze[prevCell].perm[j] == currCell && j==0){
+			//turn left and drive 1 cell
+		break;
+		}
+		else if(maze[prevCell].perm[j] == currCell && j==1){
+			//turn 180 and drive 1 cell
+		break;
+		}
+		if(maze[prevCell].perm[j] == currCell && j==2){
+			//turn right and drive 1 cell
+		break;
+		}
+		else if(maze[prevCell].perm[j] == currCell && j==3){
+			// no turn and drive 1 cell
+		break;
+		}
+	}
+}
 
 
 void cmd_pathfinder(int start, int finish) { // everything from 1-3
@@ -131,34 +151,19 @@ void cmd_pathfinder(int start, int finish) { // everything from 1-3
 			SendString(str2);
 	}
 // 3. follow path
-	/*
+
 	///nicht fertig ////
 	////////////////////
 	for (i=1; i<counter; i++){ // goes (x-1) times through finalpath
 		currCell=finalpath[i];
 		prevCell=finalpath[i-1];
 
-		permutate();
-
-		for(j=0; j<4; j++){
-			if(maze[prevCell].perm[j] == currCell && j==0){
-				//turn left and drive 1 cell
-			break;
-			}
-			else if(maze[prevCell].perm[j] == currCell && j==1){
-				//turn 180 and drive 1 cell
-			break;
-			}
-			if(maze[prevCell].perm[j] == currCell && j==2){
-				//turn right and drive 1 cell
-			break;
-			}
-			else if(maze[prevCell].perm[j] == currCell && j==3){
-				// no turn and drive 1 cell
-			break;
-			}
+		if (i==1){
+			drive();
 		}
-
+		else {
+			permutate();
+			drive();
+		}
 	}
-	*/
 }//end from fct pathfinder
