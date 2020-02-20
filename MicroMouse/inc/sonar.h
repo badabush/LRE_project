@@ -4,7 +4,7 @@
 #include "stm32f072b_discovery.h"
 #include "gpio_init.h"
 
-#define array_len 600
+#define array_len 800
 
 extern int status_flag;
 extern int sonar_flag;

@@ -85,6 +85,9 @@ void cmd_follow(int tot_dist) {
 	int diff = 0;
 	int ds_wall = dist_L;
 	int driven_dist = 0;
+	int prior_dist = 0;
+	int abs_dist = 0;
+	int side_dist = 0;
 	//determine which side to follow
 	int pre_R, pre_L, j = 0;
 	while (j < 5) {
@@ -115,102 +118,36 @@ void cmd_follow(int tot_dist) {
 	sprintf(str, "L: %i, R:%i", dist_L, dist_R);
 	SendString(str);
 	while (driven_dist <= tot_dist) {
-		//abort if it doesnt know which side to follow
-		if (side == 0) {
-			cmd_shake();
-			driven_dist = tot_dist;
-			break;
+
+		if (side == 1) {
+			side_dist = dist_R;
+		} else {
+			side_dist = dist_L;
 		}
-		//init, approach wall to +-10cm diff
-		//if wall is further away than 10cm
-		if (side == 2)
-			ds_wall = dist_L;
-		else
-			ds_wall = dist_R;
-		int prior_diff = ds_wall - des_dist;	//to wall
-		int add_angle = 0;
-		for (i = 0; i < 40; i++) {
-			//get diff to des dist
-			if (side == 2)
-				ds_wall = dist_L;
-			else
-				ds_wall = dist_R;
-			diff = ds_wall - des_dist;
-			//only correct if divergence>2
-			while ((ds_wall == 999) || (ds_wall < 8)) {
-				//error handle, let mouse drive 5cm bw
-				cmd_backward(1);
-				if (side == 2)
-					ds_wall = dist_L;
-				else
-					ds_wall = dist_R;
-			}
-			//start correction when > +-1 from des_dist
-			if (abs(diff) > 1) {
-				if (ds_wall > des_dist) {
-					//got further away from wall
-
-					if (abs(diff) > 8) {
-						angle = 15;
-						add_angle = add_angle + angle;
-					} else if (abs(diff) < 4) {
-						angle = 5;
-						add_angle = add_angle + angle;
-					} else {
-						angle = 10;
-						add_angle = add_angle + angle;
-					}
-					cmd_Lturn(angle);
-					if (side == 2)
-						cmd_Lturn(angle);
-					else
-						cmd_Rturn(angle);
-				} else if (ds_wall < des_dist) {
-					//got close to the wall
-
-					if (abs(diff) > 8) {
-						angle = 15;
-						add_angle = add_angle - angle;
-					} else if (abs(diff) < 4) {
-						angle = 5;
-						add_angle = add_angle - angle;
-					} else {
-						angle = 10;
-						add_angle = add_angle - angle;
-					}
-					if (side == 2)
-						cmd_Rturn(angle);
-					else
-						cmd_Lturn(angle);
-				}
-			}
-			cmd_forward(5);
-			driven_dist = driven_dist + 5;
-
-			//if cumulative angle exceeds 45 deg
-			if (abs(add_angle) > 45) {
-				angle = 45;
-				if (add_angle > 0) {
-					if (side == 2)
-						cmd_Rturn(angle);
-					else
-						cmd_Lturn(angle);
+		abs_dist = abs(des_dist - side_dist);
+		if (side == 1) {
+			if (abs_dist > 1) {
+				if (side_dist < des_dist) {
+					cmd_Lturn(10);
 				} else {
-
-					if (side == 2)
-						cmd_Rturn(angle);
-					else
-						cmd_Lturn(angle);
+					cmd_Rturn(10);
 				}
-				add_angle = 0;
 			}
-			prior_diff = diff;
-			if (dist_C < 10) {
-				if (side == 2)
-					cmd_Rturn(90);
-				else
-					cmd_Lturn(90);
+		} else {
+			if (abs_dist > 1) {
+				if (side_dist < des_dist) {
+					cmd_Rturn(10);
+				} else {
+					cmd_Lturn(10);
+				}
 			}
+		}
+		cmd_forward(10);
+		driven_dist += 10;
+		if (side == 1) {
+			prior_dist = dist_R;
+		} else {
+			prior_dist = dist_L;
 		}
 	}
 }
@@ -218,7 +155,7 @@ void cmd_follow(int tot_dist) {
 void cmd_corner(void) {
 //parking algorithm. Move forward towards wall and do 180 if gotten close.
 
-	SendString("*** Starting coner sequence ***\n\n");
+	SendString("*** Starting corner sequence ***\n\n");
 	while (wall_C == 0) {
 
 		cmd_follow(5);
@@ -231,7 +168,6 @@ void cmd_corner(void) {
 	 else {
 	 cmd_Lturn(90);
 	 }
-
 	 */
 	cmd_Rturn(90);
 	cmd_follow(100);
