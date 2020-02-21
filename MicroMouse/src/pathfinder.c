@@ -13,8 +13,6 @@
 #include <pathfinder.h>
 #include <sonar.h>
 
-int findpath[];
-
 void permutate(int currCell, int prevCell) {
 	for (i = 0; i < 4; i++) { // find where currCell is in prevCell.ini and derive the current orientation of mimo of that
 		if (maze[prevCell].ini[i] == currCell && i == 0) { // currCell is on the right of prevCell
@@ -187,104 +185,115 @@ void cmd_pathfinder(int start, int finish) { // everything from 1-3
 		}
 	}
 } //end from fct pathfinder
-void cmd_search(int start, int finish){
-	Maze2();//maze without inner borders
+void cmd_search(int start, int finish) {
+	/* Algorithm to find the center of the maze starting in one of the corners.
+	 *
+	 * */
+	Maze2(); //maze without inner borders
 	currCell = start;
 	prevCell = start;
 	path[0] = start;
 	// 1.2 pathfinding loop
-		for (int a = 0; a < maxl; a++) {
-			if (finishBool == 0) {
-	// 1.2.1 permutate neighbor cells to fit orientation of mouse, drive to neighbour cell
+	for (int a = 0; a < maxl; a++) {
+		if (finishBool == 0) {
+			// 1.2.1 permutate neighbor cells to fit orientation of mouse, drive to neighbour cell
 
-				permutate(currCell, prevCell); //initialisiert perm for drive
-				scan(); //setzt null für Wände
-				drive(currCell, prevCell);
+			permutate(currCell, prevCell); //initialisiert perm for drive
+			scan(); //set to 0 for walls
+			drive(currCell, prevCell);
 
-
-	// 1.2.2 go next cell, update prevCell and currCell
-				for (int k = 0; k < 4; k++) {
-					if (maze[currCell].perm[k] != 0) { // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
-						prevCell = currCell; //
-						currCell = maze[currCell].perm[k];
-						break;
-					} else
-						; // do nothing continue with loop
-				}
-	// 1.2.3 put next cell in path array
-				path[a + 1] = currCell;
-				if (currCell == finish) {
-					finishBool = 1;
-					break; // statt else if (finishBool==1){}; go to 2 short path
-				}
-	// end of pathfinding loop
+			// 1.2.2 go next cell, update prevCell and currCell
+			for (int k = 0; k < 4; k++) {
+				if (maze[currCell].perm[k] != 0) { // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
+					prevCell = currCell; //
+					currCell = maze[currCell].perm[k];
+					break;
+				} else
+					; // do nothing continue with loop
 			}
-
-			//else if (finishBool==1){}	// reached finish, end pathfinding loop
-		}
-		char str[2];
-		for (int l = 0; l < maxl; l++) {
-			if (path[l] != 0) {
-				sprintf(str, "%i", path[l]);
-				SendString(str);
-				SendString("\n");
+			// 1.2.3 put next cell in path array
+			path[a + 1] = currCell;
+			if (currCell == finish) {
+				finishBool = 1;
+				break; // statt else if (finishBool==1){}; go to 2 short path
 			}
+			// end of pathfinding loop
 		}
+
+		//else if (finishBool==1){}	// reached finish, end pathfinding loop
+	}
+	char str[2];
+	for (int l = 0; l < maxl; l++) {
+		if (path[l] != 0) {
+			sprintf(str, "%i", path[l]);
+			SendString(str);
+			SendString("\n");
+		}
+	}
 	// 2. short path; compare first entry of path with rest	of path, if same entry is found set every entry between them to 0
 
-		while (iteration < 2) {
-			for (int j = 0; j < maxl; j++) {
-				if (iteration == 0) {
-					for (int k = j; k < maxl; k++) {
-						if (path[j] == path[k + 1] && path[j] != 0) {
-							for (int l = j + 1; l <= k + 1; l++) {
-								path[l] = 0;
-							}
-						} else
-							;
-					}
-				} else if (iteration == 1) { // determine length of finalpath by counting every entry != 0
-					if (path[j] != 0) {
-						counter++;
+	while (iteration < 2) {
+		for (int j = 0; j < maxl; j++) {
+			if (iteration == 0) {
+				for (int k = j; k < maxl; k++) {
+					if (path[j] == path[k + 1] && path[j] != 0) {
+						for (int l = j + 1; l <= k + 1; l++) {
+							path[l] = 0;
+						}
 					} else
 						;
 				}
+			} else if (iteration == 1) { // determine length of finalpath by counting every entry != 0
+				if (path[j] != 0) {
+					counter++;
+				} else
+					;
 			}
-			iteration++;
 		}
-		int finalpath[counter];
-		counter = 0;
+		iteration++;
+	}
+	int finalpath[counter];
+	counter = 0;
 
-		for (int j = 0; j < maxl; j++) { // copy every entry != 0 from path to finalpath
-			if (path[j] != 0) {
-				finalpath[counter] = path[j];
-				counter++;
-			} else
-				;
-		}
-		findpath = finalpath;
+	for (int j = 0; j < maxl; j++) { // copy every entry != 0 from path to finalpath
+		if (path[j] != 0) {
+			finalpath[counter] = path[j];
+			counter++;
+		} else
+			;
+	}
+	/*TODO: this wont work, you have to assign one value to a specific element
+	 * findpath[i] = finalpath[i]
+	 * should look like as follows
+	 */
+	int findpath[50];
+	for (int i; i < maxl; i++) {
+		findpath[i] = finalpath[i];
+	}
 }
-void cmd_find(int start, int finish){
+void cmd_find(int start, int finish, int findpath[]) {
+	/* some comment*/
 	for (int i = 1; i < counter; i++) { // goes (x-1) times through finalpath
-			currCell = findpath[i];
-			prevCell = findpath[i - 1];
+		currCell = findpath[i];
+		prevCell = findpath[i - 1];
 
-			if (i == 1) {
-				drive(currCell, prevCell);
-			} else {
-				permutate(currCell, prevCell);
-				drive(currCell, prevCell);
-			}
+		if (i == 1) {
+			drive(currCell, prevCell);
+		} else {
+			permutate(currCell, prevCell);
+			drive(currCell, prevCell);
 		}
+	}
 }
-void scan(){
-	if(dist_L<6){
-			maze[currCell].perm[2]=0;
+void scan(void) {
+	/* some comment*/
+	if (dist_L < 6) {
+		maze[currCell].perm[2] = 0;
 	}
-	if(dist_R<6){
-			maze[currCell].perm[0]=0;
+	if (dist_R < 6) {
+		maze[currCell].perm[0] = 0;
 	}
-	if(dist_C<6){
-		maze[currCell].perm[3]=0;
+	if (dist_C < 6) {
+		maze[currCell].perm[3] = 0;
 	}
 }
