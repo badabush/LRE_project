@@ -13,7 +13,7 @@ struct zelle {
 		int X;
 		int Y;//Position by x and y
 		int distance; //=abs[ZielX- X]+abs[ZielY-Y]; //value from the Target by X and Y, doesnt think of walls
-		int flag=0; //Anzeigen ob Feld besucht wurde =1, Wenn Feld zweimal besucht oder Sackgasse =2
+		int flag; //Anzeigen ob Feld besucht wurde =1, Wenn Feld zweimal besucht oder Sackgasse =2
 };
 
 struct zelle maze[cells]; // a struct maze which contains a list, on first place: cell 1 (a1)
@@ -148,13 +148,16 @@ void Maze2(int finish){
 	for(int l = 1;l<8;l++){
 		for(int m=1;m<8;m++){
 			// 1X =1; 2X =1; usw
-			maze[k].X = i;
+			maze[k].X = m;
 			k++;
 		}
 	}
 	//distance basierend auf Ziel und XY values
 	for (int n=1;n<50;n++){
-		maze[n].distance = abs[maze[finish].X - maze[n].X]+abs[maze[finish].Y -maze[n].Y];
+		maze[n].distance = abs(maze[finish].X - maze[n].X)+abs(maze[finish].Y -maze[n].Y);
 
+	}
+	for(int i = 1; i<50;i++){
+		maze[i].flag = 0;
 	}
 }
