@@ -10,9 +10,10 @@ struct zelle {
 	int perm[4];//={0,0,0,0}; // permutated entries from ini, eg if mouse comes from left to cell 1 (a1), perm for a1 becomes {0,0,0,2}
 //	int prevCell[4];//={0,0,0,0}; // ini from previous cell to determ orientation of mouse
 	//for better algorithm
-		//int positionX;
-		//int positionY;//Position by x and y
-		//int distance=abs[ZielX- positionX]+abs[ZielX-positionY]; //value from the Target by X and Y, doesnt think of walls
+		int X;
+		int Y;//Position by x and y
+		int distance; //=abs[ZielX- X]+abs[ZielY-Y]; //value from the Target by X and Y, doesnt think of walls
+		int flag=0; //Anzeigen ob Feld besucht wurde =1, Wenn Feld zweimal besucht oder Sackgasse =2
 };
 
 struct zelle maze[cells]; // a struct maze which contains a list, on first place: cell 1 (a1)
@@ -77,7 +78,7 @@ void Maze(void){
     maze[48].ini[0] = 49; maze[48].ini[1] = 41; maze[48].ini[2] = 0; maze[48].ini[3] = 0; //f7
     maze[49].ini[0] = 0; maze[49].ini[1] = 42; maze[49].ini[2] = 48; maze[49].ini[3] = 0; //g7
 }
-void Maze2(void){
+void Maze2(int finish){
 	maze[1].ini[0] = 2; maze[1].ini[1] = 0; maze[1].ini[2] = 0; maze[1].ini[3] = 8; //a1
 	maze[2].ini[0] = 3; maze[2].ini[1] = 0; maze[2].ini[2] = 1; maze[2].ini[3] = 9; //b1
 	maze[3].ini[0] = 4; maze[3].ini[1] = 0; maze[3].ini[2] = 2; maze[3].ini[3] = 10; //c1
@@ -85,7 +86,7 @@ void Maze2(void){
 	maze[5].ini[0] = 6; maze[5].ini[1] = 0; maze[5].ini[2] = 4; maze[5].ini[3] = 12; //e1
 	maze[6].ini[0] = 7; maze[6].ini[1] = 0; maze[6].ini[2] = 5; maze[6].ini[3] = 13; //f1
 	maze[7].ini[0] = 0; maze[7].ini[1] = 0; maze[7].ini[2] = 6; maze[7].ini[3] = 14; //g1
-
+	maze[7].X = 5;
 	maze[8].ini[0] = 9; maze[8].ini[1] = 1; maze[8].ini[2] = 0; maze[8].ini[3] = 15; //a2
 	maze[9].ini[0] = 10; maze[9].ini[1] = 2; maze[9].ini[2] = 8; maze[9].ini[3] = 16; //b2
 	maze[10].ini[0] = 11; maze[10].ini[1] = 3; maze[10].ini[2] = 9; maze[10].ini[3] = 17; //c2
@@ -133,4 +134,27 @@ void Maze2(void){
 	maze[47].ini[0] = 48; maze[47].ini[1] = 40; maze[47].ini[2] = 46; maze[47].ini[3] = 0; //e7
 	maze[48].ini[0] = 49; maze[48].ini[1] = 41; maze[48].ini[2] = 47; maze[48].ini[3] = 0; //f7
 	maze[49].ini[0] = 0; maze[49].ini[1] = 42; maze[49].ini[2] = 48; maze[49].ini[3] = 0; //g7
+
+	//Yvalue
+	for(int j=1;j<50;j++){
+		for(int i=1;i<8;i++){
+			// 1Y =1; 2Y =2;3Y =3; usw
+			maze[j].Y = i;
+			j++;
+		}
+	}
+	//Xvalue
+	int k =1;
+	for(int l = 1;l<8;l++){
+		for(int m=1;m<8;m++){
+			// 1X =1; 2X =1; usw
+			maze[k].X = i;
+			k++;
+		}
+	}
+	//distance basierend auf Ziel und XY values
+	for (int n=1;n<50;n++){
+		maze[n].distance = abs[maze[finish].X - maze[n].X]+abs[maze[finish].Y -maze[n].Y];
+
+	}
 }
