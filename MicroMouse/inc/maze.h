@@ -3,7 +3,7 @@
 
 #include "stdio.h"
 
-#define cells 49 // Zellenanzahl
+#define cells 50 // Zellenanzahl
 
 struct zelle {
 	int ini[4];//={2,0,0,0}; // every entry a neighbour; r front l back; 0 = wall; 1,2,...,49 possible cell (see gdocs); init state as seen in gdocs
@@ -28,7 +28,7 @@ void Maze(void){
     maze[4].ini[0] = 0; maze[4].ini[1] = 0; maze[4].ini[2] = 3; maze[4].ini[3] = 11; //d1
 	maze[5].ini[0] = 6; maze[5].ini[1] = 0; maze[5].ini[2] = 0; maze[5].ini[3] = 12; //e1
     maze[6].ini[0] = 7; maze[6].ini[1] = 0; maze[6].ini[2] = 5; maze[6].ini[3] = 0; //f1
-    maze[7].ini[0] = 3; maze[7].ini[1] = 0; maze[7].ini[2] = 6; maze[7].ini[3] = 14; //g1
+    maze[7].ini[0] = 0; maze[7].ini[1] = 0; maze[7].ini[2] = 6; maze[7].ini[3] = 14; //g1
 
 	maze[8].ini[0] = 0; maze[8].ini[1] = 0; maze[8].ini[2] = 0; maze[8].ini[3] = 15; //a2
     maze[9].ini[0] = 10; maze[9].ini[1] = 0; maze[9].ini[2] = 0; maze[9].ini[3] = 16; //b2
@@ -48,7 +48,7 @@ void Maze(void){
 
 	maze[22].ini[0] = 23; maze[22].ini[1] = 15; maze[22].ini[2] = 0; maze[22].ini[3] = 29; //a4
     maze[23].ini[0] = 24; maze[23].ini[1] = 0; maze[23].ini[2] = 22; maze[23].ini[3] = 0; //b4
-	maze[24].ini[0] = 0; maze[24].ini[1] = 0; maze[24].ini[2] = 21; maze[24].ini[3] = 31; //c4
+	maze[24].ini[0] = 0; maze[24].ini[1] = 0; maze[24].ini[2] = 23; maze[24].ini[3] = 31; //c4
     maze[25].ini[0] = 0; maze[25].ini[1] = 18; maze[25].ini[2] = 0; maze[25].ini[3] = 0; //d4
 	maze[26].ini[0] = 0; maze[26].ini[1] = 19; maze[26].ini[2] = 0; maze[26].ini[3] = 33; //e4
     maze[27].ini[0] = 0; maze[27].ini[1] = 20; maze[27].ini[2] = 0; maze[27].ini[3] = 0; //f4

@@ -176,9 +176,9 @@ int main(void) {
 				pf0 = atoi(pf_start);
 				pf9 = atoi(pf_end);
 				assert(pf0>=0);
-				assert(pf0<=48);
+				assert(pf0<=49);
 				assert(pf9>=0);
-				assert(pf9<=48);
+				assert(pf9<=49);
 				cmd_pathfinder(pf0, pf9);
 
 			} else if (strcmp(str4, "cmd se")==0) {
