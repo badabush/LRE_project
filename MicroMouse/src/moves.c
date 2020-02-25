@@ -178,3 +178,56 @@ void cmd_corner(void) {
 	}
 }
 
+void adjust(void) {
+	int adjusted = 0;
+	double GK;
+	double angle;
+	//adjust to the sides
+	//walls on both sides
+	if (wall_R) {
+		if (dist_R < 4) {
+			GK = 4.0 - dist_R;
+			angle = atan(GK/adjust_ds) ;
+			cmd_backward(adjust_ds);
+			cmd_Lturn(angle * (180/3.14));
+			cmd_forward((adjust_ds / cos(angle)));
+			cmd_Rturn(angle * (180/3.14));
+		} else if (dist_R > 4) {
+			GK = dist_R - 4.0;
+			angle = atan(GK/adjust_ds);
+			cmd_backward(adjust_ds);
+			cmd_Rturn(angle*(180/3.14));
+			cmd_forward((adjust_ds / cos(angle)));
+			cmd_Lturn(angle*(180/3.14));
+		}
+		adjusted = 1;
+	} else if (wall_L) {
+		//prevents double adjustments L+R
+		if (adjusted == 0) {
+			if (dist_L < 4) {
+				GK = 4.0 - dist_L;
+				angle = atan(GK/adjust_ds);
+				cmd_backward(adjust_ds);
+				cmd_Rturn(angle*(180/3.14));
+				cmd_forward(adjust_ds / cos(angle));
+				cmd_Lturn(angle*(180/3.14));
+			} else if (dist_L > 4) {
+				GK = dist_L - 4.0;
+				angle = atan(GK/adjust_ds);
+				cmd_backward(adjust_ds);
+				cmd_Lturn(angle*(180/3.14));
+				cmd_forward(adjust_ds / cos(angle));
+				cmd_Rturn(angle*(180/3.14));
+			}
+		}
+	}
+
+	//adjust to front wall to exact 4 cm
+	if ((dist_C > 1) && (dist_C < 10)) {
+		if (dist_C < 4) {
+			cmd_backward(4 - dist_C);
+		} else if (dist_C > 4) {
+			cmd_forward(dist_C - 4);
+		}
+	}
+}

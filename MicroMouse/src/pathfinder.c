@@ -54,27 +54,22 @@ void drive(int currCell, int prevCell) {
 		if (maze[prevCell].perm[j] == currCell && j == 0) {
 			//turn R and drive 1 cell
 			cmd_Rturn(90);
-//			cmd_follow(18);
 			cmd_forward(20);
+			adjust();
 			SendString("R turn\n");
 			break;
 		} else if (maze[prevCell].perm[j] == currCell && j == 1) {
 			//drive 1 cell
-
-//			cmd_follow(18);
-
 			cmd_forward(20);
-
+			adjust();
 			SendString("Forward\n");
 			break;
 		}
 		if (maze[prevCell].perm[j] == currCell && j == 2) {
 			//turn L and drive 1 cell
 			cmd_Lturn(90);
-//			cmd_follow(18);
-
 			cmd_forward(20);
-
+			adjust();
 			SendString("L turn\n");
 			break;
 		} else if (maze[prevCell].perm[j] == currCell && j == 3) {
@@ -184,6 +179,7 @@ void cmd_pathfinder(int start, int finish) { // everything from 1-3
 			drive(currCell, prevCell);
 		}
 	}
+	cmd_shake();
 } //end from fct pathfinder
 void cmd_search(int start, int finish) {
 	/* Algorithm to find the center of the maze starting in one of the corners.

@@ -3,9 +3,13 @@
 #include "stm32f072b_discovery.h"
 #include "tools.h"
 #include "wait.h"
+#include "math.h"
 
 #define std_steps 2000
-#define std_turn 15.5
+#define std_turn 15.9
+
+#define adjust_ds 5
+
 #define ds_cell 20
 #define ds_multiplier 177;
 extern int ds;
@@ -16,6 +20,8 @@ extern int R_cmd;
 extern int L_cmd;
 
 extern int wall_C;
+extern int wall_R;
+extern int wall_L;
 
 extern int side;
 //distances from sensors
@@ -32,3 +38,4 @@ void cmd_Rturn(int deg);
 
 void cmd_park(void);
 void cmd_follow(int tot_dist);
+void adjust(void);

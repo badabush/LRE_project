@@ -23,7 +23,7 @@
 #include <wait.h>
 
 #define std_steps 2000
-#define std_turn 15.5
+//#define std_turn 15.5
 #define MillisecondsIT 1e3
 
 /* STATUS FLAG DEFINITION
@@ -165,7 +165,7 @@ int main(void) {
 
 			} else if (strcmp(received_string, "sandbox\r\n") == 0) {
 
-//				ds = cmd_forward2(10);
+				adjust();
 			} else if (strcmp(str4, "cmd pf")==0) {
 				char pf_start[2];
 				char pf_end[2];
