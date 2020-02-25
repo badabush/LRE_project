@@ -96,7 +96,7 @@ void EXTI4_15_IRQHandler(void) {
 			//filter distance
 			dist_R, cnt_R, filled_R = sonar_filtering(dist_R, dsarrayR, cnt_R,
 					filled_R);
-			if (dist_R > 50)
+			if (dist_R > 30)
 				dist_R = 999;
 			//wall flag
 			if (dist_R < 7)
@@ -142,10 +142,10 @@ void EXTI4_15_IRQHandler(void) {
 
 			t_echo_L = t9_L - t0_L;
 			dist_L = t_echo_L * 0.034;
-			if (dist_L > 400)
-				dist_L = 0;
 			dist_L, cnt_L, filled_L = sonar_filtering(dist_L, dsarrayL, cnt_L,
 					filled_L);
+			if (dist_L > 30)
+				dist_L = 999;
 			//wall flag
 			if (dist_L > 30) {
 				dist_L = 999;
