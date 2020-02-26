@@ -18,6 +18,8 @@
 #include <UART_com.h>
 #include <moves.h>
 #include <StepMotor.h>
+//#include <pathfinder.h>
+//#include <cmdFind.h>
 
 #include <sonar.h>
 #include <wait.h>
@@ -191,9 +193,9 @@ int main(void) {
 				pf0 = atoi(pf_start);
 				pf9 = atoi(pf_end);
 				assert(pf0>=0);
-				assert(pf0<=48);
+				assert(pf0<=49);
 				assert(pf9>=0);
-				assert(pf9<=48);
+				assert(pf9<=49);
 				cmd_search(pf0, pf9);
 
 			} else if (strcmp(str4, "cmd fi")==0) {
@@ -206,10 +208,10 @@ int main(void) {
 				pf0 = atoi(pf_start);
 				pf9 = atoi(pf_end);
 				assert(pf0>=0);
-				assert(pf0<=48);
+				assert(pf0<=49);
 				assert(pf9>=0);
-				assert(pf9<=48);
-				cmd_find(pf0, pf9);
+				assert(pf9<=49);
+//				cmd_find(pf0, pf9);
 
 			} else if (strcmp(received_string, "help\r\n") == 0) {
 
