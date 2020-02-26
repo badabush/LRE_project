@@ -1,6 +1,45 @@
 #include <cmdFind.h>
 //#include <sonar.h>
+#include <pathfinder.c>
 
+
+// currCell <-> prevCell
+void permutate2(int currCell, int prevCell) {
+	for (int i = 0; i < 4; i++) { // find where currCell is in prevCell.ini and derive the current orientation of mimo of that
+		if (maze[prevCell].ini[i] == currCell && i == 0) { // currCell is on the right of prevCell
+			maze[currCell].ini[0] = maze[currCell].perm[3]; // back becomes right
+			maze[currCell].ini[1] = maze[currCell].perm[0]; // right becomes front
+			maze[currCell].ini[2] = maze[currCell].perm[1];	// etc
+			maze[currCell].ini[3] = maze[currCell].perm[2]; // etc
+			break;
+		} else if (maze[prevCell].ini[i] == currCell && i == 1) { // currCell is on the front of prevCell
+			maze[currCell].ini[0] = maze[currCell].perm[0];
+			maze[currCell].ini[1] = maze[currCell].perm[1];
+			maze[currCell].ini[2] = maze[currCell].perm[2];
+			maze[currCell].ini[3] = maze[currCell].perm[3];
+			break;
+		}
+		if (maze[prevCell].ini[i] == currCell && i == 2) { // currCell is on the left of prevCell
+			maze[currCell].ini[0] = maze[currCell].perm[1];
+			maze[currCell].ini[1] = maze[currCell].perm[2];
+			maze[currCell].ini[2] = maze[currCell].perm[3];
+			maze[currCell].ini[3] = maze[currCell].perm[0];
+			break;
+		} else if (maze[prevCell].ini[i] == currCell && i == 3) { // currCell is on the back of prevCell
+			maze[currCell].ini[0] = maze[currCell].perm[2];
+			maze[currCell].ini[1] = maze[currCell].perm[3];
+			maze[currCell].ini[2] = maze[currCell].perm[0];
+			maze[currCell].ini[3] = maze[currCell].perm[1];
+			break;
+		}
+	}
+	// when currCell=prevCell, that means that mimo is in starting cell the following happens
+	if (currCell == prevCell) {
+		for (int j = 0; j < 4; j++) {
+			maze[currCell].ini[j] = maze[currCell].perm[j]; // no perm
+		}
+	}
+}
 void cmd_search(int start, int finish) {
 	/* Algorithm to find the center of the maze starting in one of the corners.
 	 *
@@ -15,10 +54,12 @@ void cmd_search(int start, int finish) {
 	for (int a = 0; a < maxl; a++) {
 		if (finishBool == 0) {
 			// 1.2.1 permutate neighbor cells to fit orientation of mouse, drive to neighbour cell
-//			if (a != 0) {
+
 			permutate(currCell, prevCell); //initialisiert perm for drive
-//			}
+
 			scan(); //set to 0 for walls
+
+			permutate2(prevCell, currCell);
 
 			// 1.2.2 find next cell, update prevCell and currCell
 			for (int k = 0; k < 4; k++) {
@@ -32,9 +73,10 @@ void cmd_search(int start, int finish) {
 
 			drive(currCell, prevCell);
 
-			//flaggen to know where we where before
+			//flagg to know where we where before
+			if(a != 0){
 			maze[prevCell].flag = maze[prevCell].flag + 1;
-
+			}
 			// 1.2.2 go next cell, update prevCell and currCell
 
 			// see cells with flag = 2 as walls
@@ -62,6 +104,7 @@ void cmd_search(int start, int finish) {
 //				} else
 //					;
 //			}
+
 //			if (hasNext != 1) {
 //				//drive when no wall and new cell
 //				for (int k = 0; k < 4; k++) {
