@@ -69,27 +69,19 @@ void cmd_search(int start, int finish) {
 //			permutate(currCell, prevCell); //initialisiert perm for drive
 
 			// 1.2.2 find next cell, update prevCell and currCell
-			for (int k = 0; k < 4; k++) {
-				if (maze[currCell].perm[k] != 0) { // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
-					prevCell = currCell; //
-					currCell = maze[currCell].perm[k];
-					break;
-				} else
-					; // do nothing continue with loop
-			}
+//			for (int k = 0; k < 4; k++) {
+//				if (maze[currCell].perm[k] != 0) { // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
+//					prevCell = currCell; //
+//					currCell = maze[currCell].perm[k];
+//					break;
+//				} else
+//					; // do nothing continue with loop
+//			}
 //			SendString(printf("curr: %i; prev: %i\n", currCell, prevCell));
-			drive(currCell, prevCell);
 
-			//flagg to know where we where before
-			if (a != 0) {
-				maze[prevCell].flag = maze[prevCell].flag + 1;
-			}
 			// 1.2.2 go next cell, update prevCell and currCell
 
 			// see cells with flag = 2 as walls
-//			if (maze[prevCell].flag == 2) {
-//				maze[currCell].perm[3] = 0;
-//			}
 			/* Auswahl der n�chsten Zelle Aufgrund der W�nde, Flags und Value(distance)
 			 * Keine Wand
 			 * 	Flag (dont need the 1 flag in our maze because there is no
@@ -97,50 +89,58 @@ void cmd_search(int start, int finish) {
 			 *
 			 * */
 			//drive nearer to finish when no wall and new cell
-//			for (int k = 0; k < 4; k++) {
-//				//   perm[k] ist der Index der n�chsten zelle
-//				if (maze[currCell].perm[k] != 0
-//						&& maze[currCell].distance
-//								> maze[maze[currCell].perm[k]].distance
-//						&& maze[maze[currCell].perm[k]].flag == 0) {
-//					clearNodes();
-//					prevCell = currCell; // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
-//					currCell = maze[currCell].perm[k];
-//					hasNext = 1;
-//					break;
-//				} else
-//					;
-//			}
-//			if (hasNext != 1) {
-//				//drive when no wall and new cell
-//				for (int k = 0; k < 4; k++) {
-//					//   perm[k] ist der Index der n�chsten zelle
-//					if (maze[currCell].perm[k] != 0
-//							&& maze[maze[currCell].perm[k]].flag == 0) {
-//						clearNodes();
-//						prevCell = currCell; // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
-//						currCell = maze[currCell].perm[k];
-//						hasNext = 1;
-//						break;
-//					} else
-//						;
-//				}
-//			}
-//			if (hasNext != 1) {
-//				//drive where is no wall
-//				for (int k = 0; k < 4; k++) {
-//					//   perm[k] ist der Index der n�chsten zelle
-//					if (maze[currCell].perm[k] != 0) {
-//						clearNodes();
-//						prevCell = currCell; // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
-//						currCell = maze[currCell].perm[k];
-//						hasNext = 0;   //for the next run
-//						break;
-//					} else
-//						; // do nothing continue with loop
-//				}
-//			}
-//
+			for (int k = 0; k < 4; k++) {
+				//   perm[k] ist der Index der n�chsten zelle
+				if ((maze[currCell].perm[k] != 0)
+						&& (maze[currCell].distance
+								> maze[maze[currCell].perm[k]].distance)
+						&& (maze[maze[currCell].perm[k]].flag == 0)) {
+					clearNodes();
+					prevCell = currCell; // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
+					currCell = maze[currCell].perm[k];
+					hasNext = 1;
+					break;
+				} else
+					;
+			}
+			if (hasNext == 0) {
+				//drive when no wall and new cell
+				for (int k = 0; k < 4; k++) {
+					//   perm[k] ist der Index der n�chsten zelle
+					if (maze[currCell].perm[k] != 0
+							&& maze[maze[currCell].perm[k]].flag == 0) {
+						clearNodes();
+						prevCell = currCell; // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
+						currCell = maze[currCell].perm[k];
+						hasNext = 1;
+						break;
+					} else
+						;
+				}
+			}
+			if (hasNext != 1) {
+				//drive where is no wall
+				for (int k = 0; k < 4; k++) {
+					//   perm[k] ist der Index der n�chsten zelle
+					if (maze[currCell].perm[k] != 0) {
+						clearNodes();
+						prevCell = currCell; // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
+						currCell = maze[currCell].perm[k];
+						hasNext = 0;   //for the next run
+						break;
+					} else
+						; // do nothing continue with loop
+				}
+			}
+			drive(currCell, prevCell);
+
+			//flagg to know where we where before
+			if (a != 0) {
+				maze[prevCell].flag += 1;
+			}
+			if (maze[prevCell].flag == 2) {
+				maze[currCell].perm[3] = 0;
+			}
 			// 1.2.3 put next cell in path array
 			path[a + 1] = currCell;
 			if (currCell == finish) {
