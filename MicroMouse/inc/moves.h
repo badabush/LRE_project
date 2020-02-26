@@ -11,7 +11,7 @@
 #define adjust_ds 5
 
 #define ds_cell 20
-#define ds_multiplier 180;
+#define ds_multiplier 155;
 extern int ds;
 extern int Lrot_dir;
 extern int Rrot_dir;

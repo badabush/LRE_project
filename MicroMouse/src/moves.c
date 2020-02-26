@@ -8,7 +8,7 @@ void cmd_forward(int dist) {
 	L_cmd = 1;
 	ds = dist * ds_multiplier
 	;
-	DelayMil(200 * dist);
+	DelayMil(170 * dist);
 }
 
 void cmd_backward(int dist) {
@@ -18,7 +18,7 @@ void cmd_backward(int dist) {
 	L_cmd = 1;
 	ds = dist * ds_multiplier
 	;
-	DelayMil(200 * dist);
+	DelayMil(170 * dist);
 }
 
 void cmd_Lturn(int deg) {
@@ -224,10 +224,10 @@ void adjust(void) {
 
 	//adjust to front wall to exact 4 cm
 	if ((dist_C > 1) && (dist_C < 10)) {
-		if (dist_C < 3) {
-			cmd_backward(3 - dist_C);
-		} else if (dist_C > 3) {
-			cmd_forward(dist_C - 3);
+		if (dist_C < 4) {
+			cmd_backward(4 - dist_C);
+		} else if (dist_C > 4) {
+			cmd_forward(dist_C - 4);
 		}
 	}
 }

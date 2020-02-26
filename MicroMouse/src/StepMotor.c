@@ -74,7 +74,7 @@ void TIM16_IRQHandler(void) {
 			case 0:
 				GPIO_SetBits(stpport, L4);
 				GPIO_ResetBits(stpport, L3 | L2 | L1);
-				if (Lrot_dir == 0) {
+				if (Lrot_dir == 1) {
 					step_counterL++;
 				} else {
 					step_counterL = 7;
@@ -84,7 +84,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, L4 | L3);
 				GPIO_ResetBits(stpport, L1 | L2);
 
-				if (Lrot_dir == 0) {
+				if (Lrot_dir == 1) {
 					step_counterL++;
 				} else {
 					step_counterL--;
@@ -94,7 +94,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, L3);
 				GPIO_ResetBits(stpport, L4 | L2 | L1);
 
-				if (Lrot_dir == 0) {
+				if (Lrot_dir == 1) {
 					step_counterL++;
 				} else {
 					step_counterL--;
@@ -104,7 +104,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, L2 | L3);
 				GPIO_ResetBits(stpport, L1 | L4);
 
-				if (Lrot_dir == 0) {
+				if (Lrot_dir == 1) {
 					step_counterL++;
 				} else {
 					step_counterL--;
@@ -114,7 +114,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, L2);
 				GPIO_ResetBits(stpport, L3 | L1 | L4);
 
-				if (Lrot_dir == 0) {
+				if (Lrot_dir == 1) {
 					step_counterL++;
 				} else {
 					step_counterL--;
@@ -124,7 +124,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, L1 | L2);
 				GPIO_ResetBits(stpport, L3 | L4);
 
-				if (Lrot_dir == 0) {
+				if (Lrot_dir == 1) {
 					step_counterL++;
 				} else {
 					step_counterL--;
@@ -134,7 +134,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, L1);
 				GPIO_ResetBits(stpport, L2 | L3 | L4);
 
-				if (Lrot_dir == 0) {
+				if (Lrot_dir == 1) {
 					step_counterL++;
 				} else {
 					step_counterL--;
@@ -144,7 +144,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, L1 | L4);
 				GPIO_ResetBits(stpport, L2 | L3);
 
-				if (Lrot_dir == 0) {
+				if (Lrot_dir == 1) {
 					step_counterL++;
 				} else {
 					step_counterL--;
@@ -162,7 +162,7 @@ void TIM16_IRQHandler(void) {
 			case 0:
 				GPIO_SetBits(stpport, R4);
 				GPIO_ResetBits(stpport, R2 | R3 | R1);
-				if (Rrot_dir == 0) {
+				if (Rrot_dir == 1) {
 					step_counterR++;
 				} else {
 					step_counterR = 7;
@@ -172,7 +172,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, R3 | R4);
 				GPIO_ResetBits(stpport, R1 | R2);
 
-				if (Rrot_dir == 0) {
+				if (Rrot_dir == 1) {
 					step_counterR++;
 				} else {
 					step_counterR--;
@@ -182,7 +182,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, R3);
 				GPIO_ResetBits(stpport, R1 | R2 | R4);
 
-				if (Rrot_dir == 0) {
+				if (Rrot_dir == 1) {
 					step_counterR++;
 				} else {
 					step_counterR--;
@@ -192,7 +192,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, R2 | R3);
 				GPIO_ResetBits(stpport, R1 | R4);
 
-				if (Rrot_dir == 0) {
+				if (Rrot_dir == 1) {
 					step_counterR++;
 				} else {
 					step_counterR--;
@@ -202,7 +202,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, R2);
 				GPIO_ResetBits(stpport, R3 | R1 | R4);
 
-				if (Rrot_dir == 0) {
+				if (Rrot_dir == 1) {
 					step_counterR++;
 				} else {
 					step_counterR--;
@@ -212,7 +212,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, R1 | R2);
 				GPIO_ResetBits(stpport, R3 | R4);
 
-				if (Rrot_dir == 0) {
+				if (Rrot_dir == 1) {
 					step_counterR++;
 				} else {
 					step_counterR--;
@@ -222,7 +222,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, R1);
 				GPIO_ResetBits(stpport, R2 | R3 | R4);
 
-				if (Rrot_dir == 0) {
+				if (Rrot_dir == 1) {
 					step_counterR++;
 				} else {
 					step_counterR--;
@@ -232,7 +232,7 @@ void TIM16_IRQHandler(void) {
 				GPIO_SetBits(stpport, R1 | R4);
 				GPIO_ResetBits(stpport, R2 | R3);
 
-				if (Rrot_dir == 0) {
+				if (Rrot_dir == 1) {
 					step_counterR++;
 				} else {
 					step_counterR--;
