@@ -28,7 +28,7 @@ void cmd_Lturn(int deg) {
 	R_cmd = 1;
 	L_cmd = 1;
 	ds = deg * std_turn;
-	DelayMil(25 * deg);
+	DelayMil(22 * deg);
 }
 
 void cmd_Rturn(int deg) {
@@ -38,7 +38,7 @@ void cmd_Rturn(int deg) {
 	R_cmd = 1;
 	L_cmd = 1;
 	ds = deg * std_turn;
-	DelayMil(25 * deg);
+	DelayMil(22 * deg);
 }
 
 void cmd_park(void) {
@@ -182,6 +182,7 @@ void adjust(void) {
 	int adjusted = 0;
 	double GK;
 	double angle;
+	int corr = 1; //correction for angle
 	//adjust to the sides
 	//walls on both sides
 	if (wall_R) {
@@ -189,14 +190,14 @@ void adjust(void) {
 			GK = 4.0 - dist_R;
 			angle = atan(GK/adjust_ds) ;
 			cmd_backward(adjust_ds);
-			cmd_Lturn(angle * (180/3.14));
+			cmd_Lturn((angle * (180/3.14)) + corr);
 			cmd_forward((adjust_ds / cos(angle)));
 			cmd_Rturn(angle * (180/3.14));
 		} else if (dist_R > 4) {
 			GK = dist_R - 4.0;
 			angle = atan(GK/adjust_ds);
 			cmd_backward(adjust_ds);
-			cmd_Rturn(angle*(180/3.14));
+			cmd_Rturn((angle*(180/3.14)) + corr);
 			cmd_forward((adjust_ds / cos(angle)));
 			cmd_Lturn(angle*(180/3.14));
 		}
@@ -208,14 +209,14 @@ void adjust(void) {
 				GK = 4.0 - dist_L;
 				angle = atan(GK/adjust_ds);
 				cmd_backward(adjust_ds);
-				cmd_Rturn(angle*(180/3.14));
+				cmd_Rturn((angle*(180/3.14)) + corr);
 				cmd_forward(adjust_ds / cos(angle));
 				cmd_Lturn(angle*(180/3.14));
 			} else if (dist_L > 4) {
 				GK = dist_L - 4.0;
 				angle = atan(GK/adjust_ds);
 				cmd_backward(adjust_ds);
-				cmd_Lturn(angle*(180/3.14));
+				cmd_Lturn((angle*(180/3.14)) + corr);
 				cmd_forward(adjust_ds / cos(angle));
 				cmd_Rturn(angle*(180/3.14));
 			}

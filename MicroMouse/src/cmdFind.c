@@ -1,7 +1,4 @@
 #include <cmdFind.h>
-//#include <sonar.h>
-#include <pathfinder.c>
-
 
 // currCell <-> prevCell
 void permutate2(int currCell, int prevCell) {
@@ -57,9 +54,19 @@ void cmd_search(int start, int finish) {
 
 			permutate(currCell, prevCell); //initialisiert perm for drive
 
-			scan(); //set to 0 for walls
-
-			permutate2(prevCell, currCell);
+//			scan(); //set to 0 for walls
+			if (dist_L < 10) {
+				maze[currCell].perm[2] = 0;
+			}
+			if (dist_R < 10) {
+				maze[currCell].perm[0] = 0;
+			}
+			if (dist_C < 10) {
+				maze[currCell].perm[1] = 0;
+			}
+//
+//			permutate2(prevCell, currCell);
+//			permutate(currCell, prevCell); //initialisiert perm for drive
 
 			// 1.2.2 find next cell, update prevCell and currCell
 			for (int k = 0; k < 4; k++) {
@@ -70,12 +77,12 @@ void cmd_search(int start, int finish) {
 				} else
 					; // do nothing continue with loop
 			}
-
+//			SendString(printf("curr: %i; prev: %i\n", currCell, prevCell));
 			drive(currCell, prevCell);
 
 			//flagg to know where we where before
-			if(a != 0){
-			maze[prevCell].flag = maze[prevCell].flag + 1;
+			if (a != 0) {
+				maze[prevCell].flag = maze[prevCell].flag + 1;
 			}
 			// 1.2.2 go next cell, update prevCell and currCell
 
@@ -104,7 +111,6 @@ void cmd_search(int start, int finish) {
 //				} else
 //					;
 //			}
-
 //			if (hasNext != 1) {
 //				//drive when no wall and new cell
 //				for (int k = 0; k < 4; k++) {
@@ -199,6 +205,8 @@ void cmd_search(int start, int finish) {
 	for (int i; i < maxl; i++) {
 		findpath[i] = finalpath[i];
 	}
+
+	cmd_shake();
 }
 
 /* ********************************************************
@@ -236,11 +244,6 @@ void scan(void) {
 	}
 	if (dist_R < 10) {
 		maze[currCell].perm[0] = 0;
-//
-//		char sonar_dist[10];
-//		sprintf(sonar_dist, "R: %2i cm\r\n", dist_R);
-//		SendString(sonar_dist);
-
 	}
 	if (dist_C < 10) {
 		maze[currCell].perm[1] = 0;
