@@ -74,10 +74,10 @@ void drive(int currCell, int prevCell) {
 			break;
 		} else if (maze[prevCell].perm[j] == currCell && j == 3) {
 			// 180 turn and drive 1 cell
-			cmd_Lturn(180);
-//			cmd_follow(18);
-
+			cmd_Lturn(175);
+//			adjust();
 			cmd_forward(20);
+			adjust();
 			//maze[prevCell].flag = maze[prevCell].flag +1; //flagging the dead ends
 			SendString("180 turn\n");
 			break;

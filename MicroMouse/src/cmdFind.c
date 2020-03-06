@@ -42,8 +42,8 @@ void cmd_search(int start, int finish) {
 	 *
 	 * */
 	Maze2(finish); //maze without inner borders
-	int finishBool = 0, iteration = 0; // maxl = max length of path= (number of cells mouse drives through a complete drive through whole maze)+1
-	int path[maxl] = { 0 };
+	int finishBool = 0; // maxl = max length of path= (number of cells mouse drives through a complete drive through whole maze)+1
+	int path[100] = { 0 };
 	int currCell = start;
 	int prevCell = start;
 	path[0] = start;
@@ -155,11 +155,12 @@ void cmd_search(int start, int finish) {
 	}
 
 	// 2. short path; compare first entry of path with rest	of path, if same entry is found set every entry between them to 0
-
+	int iteration = 0;
 	while (iteration < 2) {
 		for (int j = 0; j < maxl; j++) {
 			if (iteration == 0) {
 				for (int k = j; k < maxl; k++) {
+//					if (path[j] != 0) {
 					if (path[j] == path[k + 1] && path[j] != 0) {
 						for (int l = j + 1; l <= k + 1; l++) {
 							path[l] = 0;
@@ -181,7 +182,6 @@ void cmd_search(int start, int finish) {
 		if (path[j] != 0) {
 			finalpath[cnt] = path[j];
 			cnt++;
-
 		}
 	}
 

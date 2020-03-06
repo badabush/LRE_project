@@ -21,6 +21,8 @@
 #include <StepMotor.h>
 #include <sonar.h>
 #include <wait.h>
+#include <task4.h>
+//#include <pathfinder.h>
 
 #define std_steps 2000
 //#define std_turn 15.5
@@ -70,7 +72,7 @@ int wall_L = 0;
 int wall_C = 0;
 int wall_R = 0;
 
-int finalpath[50] = {0};
+int finalpath[50] = { 0 };
 int counter = 0;
 
 int pf0;
@@ -96,6 +98,7 @@ int main(void) {
 	/* ******************************************** */
 
 	//init Motor
+
 	MotorGPIOInit();
 	MotorTIMInit();
 	MotorIRT();
@@ -156,7 +159,7 @@ int main(void) {
 			} else if (strcmp(received_string, "cmd follow\r\n") == 0) {
 				cmd_follow(200);
 			} else if (strcmp(received_string, "cmd corner\r\n") == 0) {
-				cmd_corner();
+//				cmd_corner();
 
 			} else if (strcmp(received_string, "tm us\r\n") == 0) {
 
@@ -206,6 +209,12 @@ int main(void) {
 			} else if (strcmp(str4, "cmd fi") == 0) {
 				cmd_find(pf0, pf9, counter);
 				cmd_shake();
+
+			} else if (strcmp(str4, "cmd fw") == 0) {
+				char cell1[1];
+				substring(received_string, cell1, 7, 1);
+				t4_follow(atoi(cell1));
+
 
 			} else if (strcmp(received_string, "help\r\n") == 0) {
 

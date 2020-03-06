@@ -182,7 +182,7 @@ void adjust(void) {
 	int adjusted = 0;
 	double GK;
 	double angle;
-	int corr = 1; //correction for angle
+	int corr = 2; //correction for angle
 	//adjust to the sides
 	//walls on both sides
 	if (wall_R) {

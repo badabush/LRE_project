@@ -2,7 +2,7 @@
 #include <maze.h>
 #include <stdbool.h>
 
-#define maxl 100
+#define maxl 99
 
 int currCell, prevCell;
 int path[maxl];
