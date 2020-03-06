@@ -121,29 +121,23 @@ void Maze2(int finish){
 	maze[48].ini[0] = 49; maze[48].ini[1] = 41; maze[48].ini[2] = 47; maze[48].ini[3] = 0; //f7
 	maze[49].ini[0] = 0; maze[49].ini[1] = 42; maze[49].ini[2] = 48; maze[49].ini[3] = 0; //g7
 
-	//Yvalue
-	for(int j=1;j<50;j++){
-		for(int i=1;i<8;i++){
-			// 1Y =1; 2Y =2;3Y =3; usw
-			maze[j].Y = i;
-			j++;
+	//initialize X & Y values
+	int k = 1;
+	for (int y = 1; y <= 7; y++) {
+		for (int x = 1; x <= 7; x++) {
+			maze[k].X = x;
+			maze[k].Y = y;
+			k += 1;
 		}
 	}
-	//Xvalue
-	int k =1;
-	for(int l = 1;l<8;l++){
-		for(int m=1;m<8;m++){
-			// 1X =1; 2X =1; usw
-			maze[k].X = m;
-			k++;
-		}
-	}
+
 	//distance basierend auf Ziel und XY values
-	for (int n=1;n<50;n++){
-		maze[n].distance = abs(maze[finish].X - maze[n].X)+abs(maze[finish].Y -maze[n].Y);
+	for (int n = 1; n < 50; n++) {
+		maze[n].distance = abs(maze[finish].X - maze[n].X)
+				+ abs(maze[finish].Y - maze[n].Y);
 
 	}
-	for(int i = 1; i<50;i++){
+	for (int i = 1; i < 50; i++) {
 		maze[i].flag = 0;
 	}
 }

@@ -42,7 +42,7 @@ void cmd_search(int start, int finish) {
 	 *
 	 * */
 	Maze2(finish); //maze without inner borders
-	int counter = 0, finishBool = 0, iteration = 0; // maxl = max length of path= (number of cells mouse drives through a complete drive through whole maze)+1
+	int finishBool = 0, iteration = 0; // maxl = max length of path= (number of cells mouse drives through a complete drive through whole maze)+1
 	int path[maxl] = { 0 };
 	int currCell = start;
 	int prevCell = start;
@@ -54,14 +54,13 @@ void cmd_search(int start, int finish) {
 
 			permutate(currCell, prevCell); //initialisiert perm for drive
 
-//			scan(); //set to 0 for walls
-			if (dist_L < 10) {
+			if (wall_L == 1) {
 				maze[currCell].perm[2] = 0;
 			}
-			if (dist_R < 10) {
+			if (wall_R == 1) {
 				maze[currCell].perm[0] = 0;
 			}
-			if (dist_C < 10) {
+			if (wall_C == 1) {
 				maze[currCell].perm[1] = 0;
 			}
 //
@@ -100,8 +99,10 @@ void cmd_search(int start, int finish) {
 					currCell = maze[currCell].perm[k];
 					hasNext = 1;
 					break;
-				} else
-					;
+				} else {
+					// if distance isnt reducing
+					hasNext = 0;
+				}
 			}
 			if (hasNext == 0) {
 				//drive when no wall and new cell
@@ -118,7 +119,7 @@ void cmd_search(int start, int finish) {
 						;
 				}
 			}
-			if (hasNext != 1) {
+			if (hasNext == 0) {
 				//drive where is no wall
 				for (int k = 0; k < 4; k++) {
 					//   perm[k] ist der Index der n�chsten zelle
@@ -126,7 +127,6 @@ void cmd_search(int start, int finish) {
 						clearNodes();
 						prevCell = currCell; // first entry != 0 becomes current cell and therefore the next cell to which mimo will drive
 						currCell = maze[currCell].perm[k];
-						hasNext = 0;   //for the next run
 						break;
 					} else
 						; // do nothing continue with loop
@@ -153,14 +153,7 @@ void cmd_search(int start, int finish) {
 
 		//else if (finishBool==1){}	// reached finish, end pathfinding loop
 	}
-	char str[2];
-	for (int l = 0; l < maxl; l++) {
-		if (path[l] != 0) {
-			sprintf(str, "%i", path[l]);
-			SendString(str);
-			SendString("\n");
-		}
-	}
+
 	// 2. short path; compare first entry of path with rest	of path, if same entry is found set every entry between them to 0
 
 	while (iteration < 2) {
@@ -183,30 +176,23 @@ void cmd_search(int start, int finish) {
 		}
 		iteration++;
 	}
-	int finalpath[counter];
-	counter = 0;
-
+	int cnt = 0;
 	for (int j = 0; j < maxl; j++) { // copy every entry != 0 from path to finalpath
 		if (path[j] != 0) {
-			finalpath[counter] = path[j];
-			counter++;
+			finalpath[cnt] = path[j];
+			cnt++;
 
-			sprintf(str, "%i", finalpath[j]);
+		}
+	}
+
+	char str[2];
+	for (int l = 0; l < 50; l++) {
+		if (finalpath[l] != 0) {
+			sprintf(str, "%i", finalpath[l]);
 			SendString(str);
 			SendString("\n");
-		} else
-			;
+		}
 	}
-	/*TODO: this wont work, you have to assign one value to a specific element
-	 * findpath[i] = finalpath[i]
-	 * should look like as follows
-	 */
-	int findpath[50];
-	for (int i; i < maxl; i++) {
-		findpath[i] = finalpath[i];
-	}
-
-	cmd_shake();
 }
 
 /* ********************************************************
@@ -215,41 +201,44 @@ void cmd_search(int start, int finish) {
  * ********************************************************
  * *********************************************************/
 
-void cmd_find(int start, int finish, int findpath[]) {
+void cmd_find(int start, int finish, int counter) {
 	Maze2(finish); //added
 	//reset perm before driving
+	int finpath[counter];
+
+	for (int j = 0; j < counter; j++) { // copy every entry != 0 from path to finalpath
+		finpath[j] = finalpath[j];
+	}
+	//<debug print>
+	char str[2];
+	for (int l = 0; l < counter; l++) {
+		if (finpath[l] != 0) {
+			sprintf(str, "%i", finpath[l]);
+			SendString(str);
+			SendString("\n");
+		}
+	}
+	//</debug print>
 	for (int i = 0; i < 50; i++) {
 		maze[i].perm[0] = maze[i].ini[0];
 		maze[i].perm[1] = maze[i].ini[1];
 		maze[i].perm[2] = maze[i].ini[2];
 		maze[i].perm[3] = maze[i].ini[3];
 	}
-	/* some comment*/
 	for (int i = 1; i < counter; i++) { // goes (x-1) times through finalpath
-		currCell = findpath[i];
-		prevCell = findpath[i - 1];
+		currCell = finpath[i];
+		prevCell = finpath[i - 1];
 
 		if (i == 1) {
 			drive(currCell, prevCell);
+			permutate(currCell, prevCell);
 		} else {
 			permutate(currCell, prevCell);
 			drive(currCell, prevCell);
 		}
 	}
 }
-void scan(void) {
-	/* some comment*/
-	if (dist_L < 10) {
-		maze[currCell].perm[2] = 0;
-	}
-	if (dist_R < 10) {
-		maze[currCell].perm[0] = 0;
-	}
-	if (dist_C < 10) {
-		maze[currCell].perm[1] = 0;
-	}
 
-}
 void clearNodes(void) {
 	// setting nodes to 0; nessasary for Nodes because in a Node we are driving sometimes more then two times
 	for (int k = 0; k < 4; k++) {
@@ -269,5 +258,6 @@ void clearNodes(void) {
 		} else
 			;
 	}
+
 }
 

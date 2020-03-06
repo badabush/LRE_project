@@ -14,13 +14,11 @@
 #include <stm32f0xx.h>
 #include <stm32f072b_discovery.h>
 #include <assert.h>
+#include <cmdFind.h>
 #include <tools.h>
 #include <UART_com.h>
 #include <moves.h>
 #include <StepMotor.h>
-//#include <pathfinder.h>
-//#include <cmdFind.h>
-
 #include <sonar.h>
 #include <wait.h>
 
@@ -72,6 +70,11 @@ int wall_L = 0;
 int wall_C = 0;
 int wall_R = 0;
 
+int finalpath[50] = {0};
+int counter = 0;
+
+int pf0;
+int pf9;
 //design distance for follow wall
 int des_dist = 4; //CHANGE THIS FOR DISTANCE TO WALL!!!!
 
@@ -168,7 +171,7 @@ int main(void) {
 			} else if (strcmp(received_string, "sandbox\r\n") == 0) {
 
 				adjust();
-			} else if (strcmp(str4, "cmd pf")==0) {
+			} else if (strcmp(str4, "cmd pf") == 0) {
 				char pf_start[2];
 				char pf_end[2];
 				substring(received_string, pf_start, 7, 2);
@@ -177,13 +180,13 @@ int main(void) {
 				int pf9;
 				pf0 = atoi(pf_start);
 				pf9 = atoi(pf_end);
-				assert(pf0>=0);
-				assert(pf0<=49);
-				assert(pf9>=0);
-				assert(pf9<=49);
+				assert(pf0 >= 0);
+				assert(pf0 <= 49);
+				assert(pf9 >= 0);
+				assert(pf9 <= 49);
 				cmd_pathfinder(pf0, pf9);
 
-			} else if (strcmp(str4, "cmd se")==0) {
+			} else if (strcmp(str4, "cmd se") == 0) {
 				char pf_start[2];
 				char pf_end[2];
 				substring(received_string, pf_start, 7, 2);
@@ -192,26 +195,17 @@ int main(void) {
 				int pf9;
 				pf0 = atoi(pf_start);
 				pf9 = atoi(pf_end);
-				assert(pf0>=0);
-				assert(pf0<=49);
-				assert(pf9>=0);
-				assert(pf9<=49);
-				cmd_search(pf0, pf9);
+				assert(pf0 >= 0);
+				assert(pf0 <= 49);
+				assert(pf9 >= 0);
+				assert(pf9 <= 49);
 
-			} else if (strcmp(str4, "cmd fi")==0) {
-				char pf_start[2];
-				char pf_end[2];
-				substring(received_string, pf_start, 7, 2);
-				substring(received_string, pf_end, 10, 2);
-				int pf0;
-				int pf9;
-				pf0 = atoi(pf_start);
-				pf9 = atoi(pf_end);
-				assert(pf0>=0);
-				assert(pf0<=49);
-				assert(pf9>=0);
-				assert(pf9<=49);
-//				cmd_find(pf0, pf9);
+				cmd_search(pf0, pf9);
+				cmd_shake();
+
+			} else if (strcmp(str4, "cmd fi") == 0) {
+				cmd_find(pf0, pf9, counter);
+				cmd_shake();
 
 			} else if (strcmp(received_string, "help\r\n") == 0) {
 

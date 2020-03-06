@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 #define maxl 100
-int a, counter = 0, finishBool = 0, iteration = 0, i, j, k, l, newl; // maxl = max length of path= (number of cells mouse drives through a complete drive through whole maze)+1
+
 int currCell, prevCell;
 int path[maxl];
 
@@ -11,9 +11,17 @@ extern int dist_C;
 extern int dist_L;
 extern int dist_R;
 
+extern int wall_R;
+extern int wall_C;
+extern int wall_L;
+extern int finalpath[50];
+extern int counter;
+
 bool hasNext;
+extern void Maze(void);
+extern void cmd_shake(void);
 //function declaration
 void cmd_search(int start, int finish);
-void cmd_find(int start, int finish, int findpath[50]);
+void cmd_find(int start, int finish, int counter);
 void scan(void);
 void clearNodes(void);

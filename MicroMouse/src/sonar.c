@@ -99,7 +99,7 @@ void EXTI4_15_IRQHandler(void) {
 			if (dist_R > 30)
 				dist_R = 999;
 			//wall flag
-			if (dist_R < 7)
+			if (dist_R < 10)
 				wall_R = 1;
 			else
 				wall_R = 0;
@@ -122,7 +122,7 @@ void EXTI4_15_IRQHandler(void) {
 			if (dist_C > 400)
 				dist_C = 0;
 			//wall flag
-			if (dist_C < 3) {
+			if (dist_C < 10) {
 				wall_C = 1;
 			} else
 				wall_C = 0;
@@ -150,7 +150,7 @@ void EXTI4_15_IRQHandler(void) {
 			if (dist_L > 30) {
 				dist_L = 999;
 			}
-			if (dist_L < 7)
+			if (dist_L < 10)
 				wall_L = 1;
 			else
 				wall_L = 0;
