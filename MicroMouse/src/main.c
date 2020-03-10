@@ -98,7 +98,6 @@ int main(void) {
 	/* ******************************************** */
 
 	//init Motor
-
 	MotorGPIOInit();
 	MotorTIMInit();
 	MotorIRT();
@@ -215,17 +214,23 @@ int main(void) {
 				substring(received_string, cell1, 7, 1);
 				t4_follow(atoi(cell1));
 
-
 			} else if (strcmp(received_string, "help\r\n") == 0) {
 
+//				SendString("*** <Help Window> ***\nUsage of commands:\n"
+//						"mv - Move forward\n"
+//						"mv ds X - Move for X distance.\n"
+//						"mv rr X - Rotate clockwise X°.\n"
+//						"mv lr X - Rotate counter clockwise X°.\n"
+//						"tm us - ultrasonic\n"
+//						"cmd follow - follow left wall.\n"
+//						"cmd park - drive until wall, do 180."
+//						"*** </Help Window> ***\n\n");
 				SendString("*** <Help Window> ***\nUsage of commands:\n"
-						"mv - Move forward\n"
-						"mv ds X - Move for X distance.\n"
-						"mv rr X - Rotate clockwise X°.\n"
-						"mv lr X - Rotate counter clockwise X°.\n"
-						"tm us - ultrasonic\n"
-						"cmd follow - follow left wall.\n"
-						"cmd park - drive until wall, do 180."
+						"cmd fw X - follow X cells, R, fw until wall, 180, back\n"
+						"cmd pf XX XX\n"
+						"cmd se XX XX\n"
+						"cmd fi - use this after cmd se\n"
+
 						"*** </Help Window> ***\n\n");
 
 			} else {

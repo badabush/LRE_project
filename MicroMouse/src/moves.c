@@ -8,7 +8,7 @@ void cmd_forward(int dist) {
 	L_cmd = 1;
 	ds = dist * ds_multiplier
 	;
-	DelayMil(170 * dist);
+	DelayMil(157 * dist);
 }
 
 void cmd_backward(int dist) {
@@ -18,7 +18,7 @@ void cmd_backward(int dist) {
 	L_cmd = 1;
 	ds = dist * ds_multiplier
 	;
-	DelayMil(170 * dist);
+	DelayMil(157 * dist);
 }
 
 void cmd_Lturn(int deg) {
@@ -28,7 +28,7 @@ void cmd_Lturn(int deg) {
 	R_cmd = 1;
 	L_cmd = 1;
 	ds = deg * std_turn;
-	DelayMil(22 * deg);
+	DelayMil(17 * deg);
 }
 
 void cmd_Rturn(int deg) {
@@ -38,7 +38,7 @@ void cmd_Rturn(int deg) {
 	R_cmd = 1;
 	L_cmd = 1;
 	ds = deg * std_turn;
-	DelayMil(22 * deg);
+	DelayMil(17 * deg);
 }
 
 void cmd_park(void) {
